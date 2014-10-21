@@ -166,8 +166,10 @@
 
 % *** GRAPHICS RELATED PACKAGES ***
 %
+\usepackage{float}
+
 \ifCLASSINFOpdf
-  % \usepackage[pdftex]{graphicx}
+  \usepackage[pdftex]{graphicx}
   % declare the path(s) where your graphic files are
   % \graphicspath{{../pdf/}{../jpeg/}}
   % and their extensions so you won't have to specify these with
@@ -821,6 +823,22 @@ Drop the memory. It's slow anyway
 % \subsection or using \label (\appendices by itself
 % starts a section numbered zero.)
 %
+
+
+\section{Staged Memory Scheduling: Achieving High Performance and Scalability in Heterogeneous Systems}
+\subsection{Problem}
+
+
+
+
+
+\begin{figure}[H]
+\centering
+	\includegraphics[width = 8 cm]{graphics/no1.png}
+	\caption{Limited visibility example due to small buffer size. (a) CPU-only
+	case, (b) MC’s visibility when CPU and GPU are combined, (c) Improved
+	visibility with a larger request buffer .}\label{fig:no1}
+\end{figure} 
 
 \section{test}
 Cite \cite{test}
