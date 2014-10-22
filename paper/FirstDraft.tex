@@ -170,6 +170,8 @@
 
 \ifCLASSINFOpdf
   \usepackage[pdftex]{graphicx}
+  %\renewcommand{\figurename{Figure}}
+  % \addto\captionsenglish{\renewcommand{\figurename}{}}
   % declare the path(s) where your graphic files are
   % \graphicspath{{../pdf/}{../jpeg/}}
   % and their extensions so you won't have to specify these with
@@ -807,12 +809,31 @@ Strictly speaking, a device's main memory needs to have greater capacity in smal
 Many modern solutions are starting to integrate CPUs and GPUs in the same die. For easier and cheaper integration into the existent memory architecture, both types of cores share the last-level cache. Most cache replacement policies were designed for homogeneous configurations, so they are not efficient in these cases.
 
 Policies like LRU and DDRIP will favor the GPUs when allocating cache lines due to the fact that their memory access rates are orders of magnitude higher than the CPUs. GPU applications tend to be more latency tolerant while CPU ones are more latency intolerant. So favoring GPUs in cache allocation cause a considerable decrease in the CPUs IPC, while the GPUs IPC is only marginally improved. The ideal cache replacement policy would take into consideration the latency requirements of most CPU applications by ensuring their blocks last longer in the cache.
-A replacement policy that takes this 
+A replacement policy that takes this
+
+\subsection{Memory scheduling}
+When a CPU and GPU are integrated on the same chip and share the same off-chip memory the bandwidth demanding GPU can starve the cores of the CPU on lead to a all over poor system performance \cite{SmS}.  State of the art memory controllers (MC) have mainly been focused on a multi-core CPUs and not on the joint venture of CPU-GPU SoCs.  To make the applications-aware memory scheduling work on GPU-CPU SoC a very large request buffer is needed.
+
+Figure~\ref{fig:buff}(a) shows the request buffer of a memory controller where there is only a multi-core CPU.  The MC has a good overview over
+numerous requests from the CPU cores and inside into their memory behavior.  When the buffer is shared between the GPU and CPU, as can be seen in Figure~\ref{fig:buff}(b) the requests from the GPU limit the MC capability of insight into the behavior of requests from the CPU cores.  Figure~\ref{fig:buff}(c) shows larger request buffer so that the MC can observer more requests from the CPU.
+
+\begin{figure}[H]
+\centering
+	\includegraphics[width = 8 cm]{graphics/no1.png}
+	\caption{Limited visibility example due to small buffer size. (a) CPU-only
+	case, (b) MC’s visibility when CPU and GPU are combined, (c) Improved
+	visibility with a larger request buffer.\cite{SmS}}\label{fig:buff}
+\end{figure} 
+
+The increased buffer size does not come without a cost. It increases circuit complexity and results in a significant larger die area. The larger request buffer also leads to higher power consumption and increased costs \cite{SmS} making it an unattractive solution. 
+
 \section{Solutions}
 \subsection{Cache line allocation in shared LLC}
 The proposed solution is a new cache management policy called HeLM (Heterogeneous LLC Management). It consists on measuring the cache sensitivity of the GPU and CPU, and based on some thresholds decide if a GPU access request to the LLC should be bypassed directly to the main memory or not.
 It is based on the fact that GPUs have a much higher TLP than CPUs, and thus are less affected by longer memory access latency. Having a high TLP means that there will most likely be some threads that can be ran while waiting for the memory to respond. If that is the case, bypassing the cache should not affect the IPC count.
 
+\subsection{Staged memory scheduling}
+Some stuff on the SMS coming up...
 
 \section{Perspectives}
 Write here perspectives (maybe of our own ideas).
@@ -835,24 +856,6 @@ Drop the memory. It's slow anyway
 %
 
 
-\section{Staged Memory Scheduling: Achieving High Performance and Scalability in Heterogeneous Systems}
-\subsection{Problem}
-When a CPU and GPU are integrated on the same chip and share the same of chip memory the bandwidth demanding GPU can starve the cores of the CPU on lead to a all over poor system performance.\\
-Recent memory scheduling has focused on CPU multicore only.  Figure ~\ref{fig:no1}(a)   
-
-
-
-
-\begin{figure}[H]
-\centering
-	\includegraphics[width = 8 cm]{graphics/no1.png}
-	\caption{Limited visibility example due to small buffer size. (a) CPU-only
-	case, (b) MC’s visibility when CPU and GPU are combined, (c) Improved
-	visibility with a larger request buffer .}\label{fig:no1}
-\end{figure} 
-
-\section{test}
-Cite \cite{test}
 % use section* for acknowledgement
 \ifCLASSOPTIONcompsoc
 
