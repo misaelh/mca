@@ -829,8 +829,33 @@ The increased buffer size does not come without a cost. It increases circuit com
 
 \section{Solutions}
 \subsection{Cache line allocation in shared LLC}
-The proposed solution is a new cache management policy called HeLM (Heterogeneous LLC Management). It consists on measuring the cache sensitivity of the GPU and CPU, and based on some thresholds decide if a GPU access request to the LLC should be bypassed directly to the main memory or not.
+The proposed solution is a new cache management policy called HeLM (Heterogeneous LLC Management). It consists on measuring the cache sensitivity of the GPU and CPU, and based on a couple of thresholds decide if GPU access requests to the LLC should be bypassed directly to the main memory or not.
 It is based on the fact that GPUs have a much higher TLP than CPUs, and thus are less affected by longer memory access latency. Having a high TLP means that there will most likely be some threads that can be ran while waiting for the memory to respond. If that is the case, bypassing the cache should not affect the IPC count.
+
+To calculate cache sensitivity in the GPUs, set dueling is used. The GPUs TLP is measured as the amount of wavefronts ready to be scheduled. This information is sent along with the LLC access request whenever there is an L1 cache miss. One GPU core is set to do a cache bypass whenever it's TLP is higher than a lowThreshold. Another one is set to do the same but with highThreshold. IPC is measured for both cores and if the difference is higher than pThreshold, the highThreshold is used for the remaining cores.
+
+In the case of the CPUs, the cache misses on the LLC are measured with both lowThreshold and highThreshold bypassing of the GPUs. If the difference in cache misses is higher than mThreshold, the threshold of the GPUs is overridden to be the lowThreshold.
+
+What all this means is that the CPU will be given preference over the GPU in cache allocation. The GPU will be frequently bypassing the LLC cache, specially if its TLP is high. So a penalty in the GPUs IPC is expected. However the CPU IPC is expected to see the most change, since the GPU bypassing of the LLC means the CPU will get more sets for its use.
+
+A comparison to other cache management policies was made with 3 different configurations: 1, 2 and 4 CPU cores, each with 4 GPU cores. A different random benchmark on each CPU core was run, and a random benchmark for all 4 GPUs. For each configuration, the benchmark was changed 100, 40 and 30 times respectively. The reduction of cache misses and speedup was calculated relative to LRU results. Figure~\ref{fig:comp} shows the comparison.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 8 cm]{graphics/LLCresults.png}
+	\caption{Percentage reduction in misses and percentage speedup in the CPUs and the GPUs caused by HeLM and other cache management policies in comparison to LRU}\label{fig:comp}
+\end{figure} 
+
+As can be seen in Figure~\ref{fig:comp} HeLM offer a considerably higher reduction in cache misses and overall speedup for the CPUs. On the GPUs, however, the effect is the opposite, although it is important to notice that a huge increase in misses for the GPU didn't affect so negatively the speedup. To provide a more general overview, the results for CPUs and GPUs were combined into Figure~\ref{fig:comp1}.
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 8 cm]{graphics/LLCresults2.png}
+	\caption{Combined percentage speedup of HeLM and other cache management policies in comparison to LRU}\label{fig:comp1}
+\end{figure} 
+
+As seen on Figure~\ref{fig:comp1} the overall speedup of HeLM is very noticeable even though it caused a huge amount of misses on the GPU requests. This is because GPU programs are much less sensible to the cache than CPU programs.
 
 \subsection{Staged memory scheduling}
 Some stuff on the SMS coming up...
