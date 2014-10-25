@@ -856,7 +856,15 @@ As can be seen in Figure~\ref{fig:comp} HeLM offer a considerably higher reducti
 	\caption{Combined percentage speedup of HeLM and other cache management policies in comparison to LRU}\label{fig:comp1}
 \end{figure} 
 
-As seen on Figure~\ref{fig:comp1} the overall speedup of HeLM is very noticeable even though it caused a huge amount of misses on the GPU requests. This is because GPU programs are much less sensible to the cache than CPU programs.
+Figure~\ref{fig:comp1} shows the overall speedup of HeLM is very noticeable even though it caused a huge amount of misses on the GPU requests. This is because GPU programs are much less sensible to the cache than CPU programs.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 8 cm]{graphics/LLChardware.png}
+	\caption{Hardware overhead of different cache management policies}\label{fig:LLChw}
+\end{figure}
+
+Finally, a comparison was made on the hardware overhead of HeLM and three other cache management policies. Figure~\ref{fig:LLChw} shows an explanation of the extra hardware needed for each cache policy and a count of the number of flip-flops needed to implement it. As can be seen, the policy with the least overhead is TAP, however it is not a big difference in comparison to HeLM. On the other hand, the speedup achieved by HeLM is considerably higher than TAP.
 
 \subsection{Hybrid-technology memory system}
 A proposed solution that addresses the DRAM limitations is a hybrid DRAM/PRAM-based Main Memory. PRAM is a type of non-volatile RAM which stores information as phase-state in a cell. The PRAM’s main advantages over DRAM  are the better-scaling projections and the low idle-power consumption. However, because of the low writing endurance and high-latency for writes, the technology is not a valid replacement for DRAM, being best suited to complement it in the critical points (storage and power consumption).
