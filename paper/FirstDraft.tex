@@ -886,7 +886,7 @@ The second approach is a flat organization of the two technologies, with the DRA
 \end{itemize}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width = 8 cm]{graphics/StructureWithBuffer.png}
+	\includegraphics[width = 8 cm]{graphics/StructureWithBuffer.PNG}
 	\caption{Overall view of the proposed hybrid structure with hot-write DRAM buffer}\label{fig:buff}
 \end{figure} 
 However, having the GPU working only with the PRAM memory can result in missing deadlines (because of the high write-latency), when write-intensive applications are under execution. Therefore, a dynamic hot-write buffer has been created in the DRAM memory to handle successive write requests to GPU main memory. Furthermore, the hot-write buffer removes the issue of cell wear by reducing the number of writes to a single bit (also by implementing the differential writing mechanism), thus expanding the PRAM's lifetime and reliability.
