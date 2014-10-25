@@ -119,7 +119,9 @@
 % have to be run twice to clear warning/error messages.
 
 
-
+\usepackage[font=small,labelfont=bf]{caption}
+\renewcommand{\figurename}{Figure}
+\renewcommand{\tablename}{Table}
 
 
 
@@ -596,7 +598,7 @@ pdfkeywords={Computer Society, IEEEtran, journal, LaTeX, paper,
 
 
 % The paper headers
-\markboth{Paper header}%
+\markboth{}%
 {Shell \MakeLowercase{\textit{et al.}}: Bare Advanced Demo of IEEEtran.cls for Journals}
 % The only time the second header will appear is for the odd numbered pages
 % after the title page when using the twoside option.
@@ -883,7 +885,7 @@ The proposed solution is a new memory controller (MC), Staged Memory Scheduling 
 	\caption{organization of the SMS \cite{SmS}}
 \end{figure}
 
-Batch formation groups requests from the same application that access the same row.  This is done to increase row-buffer locality.  The second stage , the batch scheduler, schedules batches from different applications and the third stage, the DRAM Command Scheduler schedules requests while satisfying all DRAM constrains. More or less directly from the paper.  Needs good rewriting. 
+The batch formation is focused on row-buffer locality.  It groups together requests from applications that want to access the same row in the main memory. The second stage , the batch scheduler, schedules batches from different applications and the third stage, the DRAM Command Scheduler schedules requests while satisfying all DRAM constrains \cite{SmS}
 
 Stage 1: Is built from simple FIFO structures that have one structure per sources.  One source is a single CPU-core or the GPU.  One batch is one or more memory requests from the same source that request access to the same DRAM row.  A batch is only ready when a request to a new DRAM row comes in, it is full or when the oldest request in the batch has exceeded a predefined age threshold.  A batch that is considered ready moves to stage 2 the Batch scheduler.
 
