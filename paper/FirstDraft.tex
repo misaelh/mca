@@ -863,6 +863,12 @@ A proposed solution that addresses the DRAM limitations is a hybrid DRAM/PRAM-ba
 
 Combining the benefits of the two technologies, the authors proposed two types of the hybrid system that can hide their weak points. 
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 8 cm]{graphics/structure-hybrid.png}
+	\caption{(a) Flat structure (b) Hierarchical structure}\label{fig:buff}
+\end{figure} 
+
 First variant is a hierarchical-topology organization, where the DRAM plays the role of a Last-Level Cache and the PRAM is the main memory. However, when regarding the CPU’s needs, a LLC miss would involve a very high latency for fetching the needed data from the main memory. In the projected case, 40 us for retrieving unused data from the PRAM transforms into 40.000 cycles for a 1 GHz CPU, an overhead too big for any out-of-order execution mechanism, assuring a deep stall on every processing unit, thus considerably reducing the IPC count.
 
 The second approach is a flat organization of the two technologies, with the DRAM mainly serving the CPU purposes, and the PRAM meant for the GPU side. This kind of implementation has several advantages over the hierarchical:
