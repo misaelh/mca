@@ -846,7 +846,7 @@ A comparison to other cache management policies was made with 3 different config
 \begin{figure}[H]
 	\centering
 	\includegraphics[width = 8 cm]{graphics/LLCresults.png}
-	\caption{Percentage reduction in misses and percentage speedup in the CPUs and the GPUs caused by HeLM and other cache management policies in comparison to LRU}\label{fig:comp}
+	\caption{Percentage reduction in misses and percentage speedup in the CPUs and the GPUs caused by HeLM and other cache management policies in comparison to LRU \cite{LLC}}\label{fig:comp}
 \end{figure} 
 
 As can be seen in Figure~\ref{fig:comp} HeLM offer a considerably higher reduction in cache misses and overall speedup for the CPUs. On the GPUs, however, the effect is the opposite, although it is important to notice that a huge increase in misses for the GPU didn't affect so negatively the speedup. To provide a more general overview, the results for CPUs and GPUs were combined into Figure~\ref{fig:comp1}.
@@ -855,7 +855,7 @@ As can be seen in Figure~\ref{fig:comp} HeLM offer a considerably higher reducti
 \begin{figure}[H]
 	\centering
 	\includegraphics[width = 8 cm]{graphics/LLCresults2.png}
-	\caption{Combined percentage speedup of HeLM and other cache management policies in comparison to LRU}\label{fig:comp1}
+	\caption{Combined percentage speedup of HeLM and other cache management policies in comparison to LRU \cite{LLC}}\label{fig:comp1}
 \end{figure} 
 
 Figure~\ref{fig:comp1} shows the overall speedup of HeLM is very noticeable even though it caused a huge amount of misses on the GPU requests. This is because GPU programs are much less sensible to the cache than CPU programs.
@@ -863,7 +863,7 @@ Figure~\ref{fig:comp1} shows the overall speedup of HeLM is very noticeable even
 \begin{figure}[H]
 	\centering
 	\includegraphics[width = 8 cm]{graphics/LLChardware.png}
-	\caption{Hardware overhead of different cache management policies}\label{fig:LLChw}
+	\caption{Hardware overhead of different cache management policies \cite{LLC}}\label{fig:LLChw}
 \end{figure}
 
 Finally, a comparison was made on the hardware overhead of HeLM and three other cache management policies. Figure~\ref{fig:LLChw} shows an explanation of the extra hardware needed for each cache policy and a count of the number of flip-flops needed to implement it. As can be seen, the policy with the least overhead is TAP, however it is not a big difference in comparison to HeLM. On the other hand, the speedup achieved by HeLM is considerably higher than TAP.
