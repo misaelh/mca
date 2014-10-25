@@ -829,9 +829,10 @@ The increased buffer size does not come without a cost. It increases circuit com
 
 \section{Solutions}
 \subsection{Cache line allocation in shared LLC}
-The proposed solution is a new cache management policy called HeLM (Heterogeneous LLC Management). It consists on measuring the cache sensitivity of the GPU and CPU, and based on some thresholds decide if a GPU access request to the LLC should be bypassed directly to the main memory or not.
+The proposed solution is a new cache management policy called HeLM (Heterogeneous LLC Management). It consists on measuring the cache sensitivity of the GPU and CPU, and based on a couple of thresholds decide if GPU access requests to the LLC should be bypassed directly to the main memory or not.
 It is based on the fact that GPUs have a much higher TLP than CPUs, and thus are less affected by longer memory access latency. Having a high TLP means that there will most likely be some threads that can be ran while waiting for the memory to respond. If that is the case, bypassing the cache should not affect the IPC count.
 
+<<<<<<< HEAD
 \subsection{Hybrid-technology memory system}
 A proposed solution that addresses the DRAM limitations is a hybrid DRAM/PRAM-based Main Memory. PRAM is a type of non-volatile RAM which stores information as phase-state in a cell. The PRAM’s main advantages over DRAM  are the better-scaling projections and the low idle-power consumption. However, because of the low writing endurance and high-latency for writes, the technology is not a valid replacement for DRAM, being best suited to complement it in the critical points (storage and power consumption).
 
@@ -846,9 +847,54 @@ It eliminates the issue of very high miss penalty on the LLC (DRAM for that prop
 \item
 It separates the memory-buses, avoiding possible GPU-CPU conflicts in critical points, such as the synchronization of complex CPU applications with memory-hungry GPU activity.
 \end{itemize}
+=======
+To calculate cache sensitivity in the GPUs, set dueling is used. The GPUs TLP is measured as the amount of wavefronts ready to be scheduled. This information is sent along with the LLC access request whenever there is an L1 cache miss. One GPU core is set to do a cache bypass whenever it's TLP is higher than a lowThreshold. Another one is set to do the same but with highThreshold. IPC is measured for both cores and if the difference is higher than pThreshold, the highThreshold is used for the remaining cores.
+
+In the case of the CPUs, the cache misses on the LLC are measured with both lowThreshold and highThreshold bypassing of the GPUs. If the difference in cache misses is higher than mThreshold, the threshold of the GPUs is overridden to be the lowThreshold.
+
+What all this means is that the CPU will be given preference over the GPU in cache allocation. The GPU will be frequently bypassing the LLC cache, specially if its TLP is high. So a penalty in the GPUs IPC is expected. However the CPU IPC is expected to see the most change, since the GPU bypassing of the LLC means the CPU will get more sets for its use.
+
+A comparison to other cache management policies was made with 3 different configurations: 1, 2 and 4 CPU cores, each with 4 GPU cores. A different random benchmark on each CPU core was run, and a random benchmark for all 4 GPUs. For each configuration, the benchmark was changed 100, 40 and 30 times respectively. The reduction of cache misses and speedup was calculated relative to LRU results. Figure~\ref{fig:comp} shows the comparison.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 8 cm]{graphics/LLCresults.png}
+	\caption{Percentage reduction in misses and percentage speedup in the CPUs and the GPUs caused by HeLM and other cache management policies in comparison to LRU}\label{fig:comp}
+\end{figure} 
+
+As can be seen in Figure~\ref{fig:comp} HeLM offer a considerably higher reduction in cache misses and overall speedup for the CPUs. On the GPUs, however, the effect is the opposite, although it is important to notice that a huge increase in misses for the GPU didn't affect so negatively the speedup. To provide a more general overview, the results for CPUs and GPUs were combined into Figure~\ref{fig:comp1}.
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 8 cm]{graphics/LLCresults2.png}
+	\caption{Combined percentage speedup of HeLM and other cache management policies in comparison to LRU}\label{fig:comp1}
+\end{figure} 
+
+As seen on Figure~\ref{fig:comp1} the overall speedup of HeLM is very noticeable even though it caused a huge amount of misses on the GPU requests. This is because GPU programs are much less sensible to the cache than CPU programs.
+>>>>>>> 598a36feef46778aa0830df13f6146b69dcb1b42
 
 \subsection{Staged memory scheduling}
-Some stuff on the SMS coming up...
+The proposed solution is a new memory controller (MC), Staged Memory Scheduling (SMS),  that is a simpler implementation in hardware and provides performance and fairness improvements over the application-aware MC.  It is split into three stages, the batch formation, batch scheduler and a DRAM command scheduler.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 8 cm]{graphics/SmS.png}
+	\caption{organization of the SMS \cite{SmS}}
+\end{figure}
+
+Batch formation groups requests from the same application that access the same row.  This is done to increase row-buffer locality.  The second stage , the batch scheduler, schedules batches from different applications and the third stage, the DRAM Command Scheduler schedules requests while satisfying all DRAM constrains. More or less directly from the paper.  Needs good rewriting. 
+
+Stage 1: Is built from simple FIFO structures that have one structure per sources.  One source is a single CPU-core or the GPU.  One batch is one or more memory requests from the same source that request access to the same DRAM row.  A batch is only ready when a request to a new DRAM row comes in, it is full or when the oldest request in the batch has exceeded a predefined age threshold.  A batch that is considered ready moves to stage 2 the Batch scheduler.
+
+Stage 2:  The Batch Scheduler operates in two states, the pick  and the  drain.  In the pick state in picks a batch from stage 1 and than enters drain state where it feeds the FIFO batch to DRAM Command Scheduler one request per clock cycle until the whole batch is gone.  The picking is done in one of two fashions.  It picks the batch using either round-robin policy or shortest job first (SJF).   SJF tends to favor latency-sensitive applications that tend to have fewer total requests and thus favoring the CPU over the GPU.  On the other hand the round-robin simply picks the next ready batch in a round-robin manner and thus servicing high memory-intensive applications and favoring the GPU over the CPU.  The batch scheduler uses SJF with a probability of $p$ and round-robin  $ 1 - p $ which will be explained better later.
+
+Stage 3: DRAM Command Scheduler (DCS) consists of few FIFO queues or one per DRAM bank.  Since the row-buffer locality from stage 1 has been preserved the only job of the DCS is to issue low-level DRAM commands and ensuring DRAM protocol compliance. 
+
+Some batches bypass stage 1 and 2 and go directly to the DCS. Latency-sensitive requests of applications with low memory-intensity and all requests wen the system is lightly loaded, that is when total number of in-flight requests over all sources in the DCS are fewer the 16.\\
+
+The probability parameter $p$:  As stated above the probability of SJF used is $p$ and that of round-robin policy $1-p$.  Therefor the value of $p$ determines  which gets higher priority, the CPU or the
+GPU.  That is when $p$ is high the SJF policy is performed more frequently then round-robin and therefore favoring less memory-intensive applications of the CPU over the GPU.  And on the other hand when p is low request batches are scheduled more often in round-robin fashion favoring memory-intensive applications of the GPU over the CPU.  As different systems have different performance needs it is proposed to have $p$ a dynamic parameter that can be tuned to the needs of different systems.
 
 \section{Perspectives}
 Write here perspectives (maybe of our own ideas).
