@@ -884,13 +884,12 @@ The second approach is a flat organization of the two technologies, with the DRA
 \item{It eliminates the issue of very high miss penalty on the LLC (DRAM for that proposal).}
 \item{It separates the memory-buses, avoiding possible GPU-CPU conflicts in critical points, such as the synchronization of complex CPU applications with memory-hungry GPU activity.}
 \end{itemize}
-
-\begin{figure}[b]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width = 8 cm]{graphics/StructureWithBuffer.png}
 	\caption{Overall view of the proposed hybrid structure with hot-write DRAM buffer}\label{fig:buff}
 \end{figure} 
-However, having the GPU working only with the PRAM memory can result in missing deadlines (because of the high write-latency), when write-intensive applications are under execution. Therefore, a dynamic hot-write buffer has been created in the DRAM memory to handle successive write requests to GPU main memory.
+However, having the GPU working only with the PRAM memory can result in missing deadlines (because of the high write-latency), when write-intensive applications are under execution. Therefore, a dynamic hot-write buffer has been created in the DRAM memory to handle successive write requests to GPU main memory. Furthermore, the hot-write buffer removes the issue of cell wear by reducing the number of writes to a single bit (also by implementing the differential writing mechanism), thus expanding the PRAM's lifetime and reliability.
 
 \subsection{Staged memory scheduling}
 The proposed solution is a new memory controller (MC), Staged Memory Scheduling (SMS),  that is a simpler implementation in hardware and provides performance and fairness improvements over the application-aware MC.  It is split into three stages, the batch formation, batch scheduler and a DRAM command scheduler.
