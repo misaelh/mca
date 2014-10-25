@@ -877,7 +877,59 @@ Stage 3: DRAM Command Scheduler (DCS) consists of few FIFO queues or one per DRA
 Some batches bypass stage 1 and 2 and go directly to the DCS. Latency-sensitive requests of applications with low memory-intensity and all requests wen the system is lightly loaded, that is when total number of in-flight requests over all sources in the DCS are fewer the 16.\\
 
 The probability parameter $p$:  As stated above the probability of SJF used is $p$ and that of round-robin policy $1-p$.  Therefor the value of $p$ determines  which gets higher priority, the CPU or the
-GPU.  That is when $p$ is high the SJF policy is performed more frequently then round-robin and therefore favoring less memory-intensive applications of the CPU over the GPU.  And on the other hand when p is low request batches are scheduled more often in round-robin fashion favoring memory-intensive applications of the GPU over the CPU.  As different systems have different performance needs it is proposed to have $p$ a dynamic parameter that can be tuned to the needs of different systems.
+GPU.  That is when $p$ is high the SJF policy is performed more frequently then round-robin and therefore favoring less memory-intensive applications of the CPU over the GPU.  And on the other hand when p is low request batches are scheduled more often in round-robin fashion favoring memory-intensive applications of the GPU over the CPU.  As different systems have different performance needs it is proposed to have $p$ a dynamic parameter that can be tuned to the needs of different systems.\\
+
+\textbf{Hardware Implementation}
+Batch Formation:  The hardware implementation for stage can be of a fairly simple nature as it only needs one comparator per source.  A new request has only to be checked if it can fit in the existing batch or not.  That is if the incoming request row index is the same as the last request that entered the batch.  The hardware overhead can be seen in Table \ref{tab:SmS1}
+
+\begin{table}[H]
+  \centering
+  \resizebox{14.3 cm}{!}{\begin{minipage}{\textwidth}
+	\begin{tabular}{| l | l |}
+		\hline
+		Storgae & Size \\ \hline
+		CPU FIFO queues 			& $N_{core} × Queue\_Size_{core} = 160 entries$ 					\\\hline
+		GPU FIFO queues 			& $N_{GPU} × Queue\_Size_{GPU} = 20 entries$ 						\\\hline
+		MPKC counters   			& $N_{core} × log_2 MPKC_{max} = 160 bits$							\\\hline
+		Last request’s row index	& $(N_{core} + N_{GPU} ) × log_2\_ Row\_ Index\_ Size = 204 bits$ 	\\\hline
+	\end{tabular}
+	
+  \end{minipage} }
+  \caption{Storage Overhead of Stage 1: Batch formation stage \cite{SmS}}\label{tab:SmS1}
+\end{table}
+
+Batch Scheduler:  The batch scheduler does not need to be very complex as it only schedules FIFOS that are as many as there are sources or cores.  When SJF is applied a tree of MIN operators can be build from the out standing batches.  As the batches are not many the tree will not get very large. The hardware overhead can be seen in Table \ref{tab:SmS2}
+
+\begin{table}[H]
+  \centering
+  \resizebox{15.5 cm}{!}{\begin{minipage}{\textwidth}
+	\begin{tabular}{| l | l |}
+		\hline
+		Storgae & Size \\ \hline
+		CPU memory request counters 			& $N_{core} × log_2 Count_{max\_CPU} = 80 bits$ 					\\\hline
+		GPU memory request counter 			& $N_{GPU} × log_2 Count_{max\_GPU} = 10 bits$ 						\\\hline	
+	\end{tabular}
+  \end{minipage} }
+  \caption{Storage Overhead of Stage 2: Batch Schedule \cite{SmS}}\label{tab:SmS2}
+\end{table}
+
+DRAM Command Scheduler:   Compared to the monolithic scheduler the DRAM command scheduler is on completely different scale.  It consist of per-bank FIFOs, eight per rank for DDR3, and only needs to look at the head of one. The hardware overhead can be seen in Table \ref{tab:SmS3}
+
+\begin{table}[H]
+  \centering
+  \resizebox{17 cm}{!}{\begin{minipage}{\textwidth}
+	\begin{tabular}{| l | l |}
+		\hline
+		Storgae & Size \\ \hline
+		Per-Bank FIFO queues			& $N_{banks} × Queue\_Size_{bank} = 120 entries$ 					\\\hline
+	\end{tabular}
+  \end{minipage} }
+  \caption{Storage Overhead of Stage 3: DRAM Command Scheduler \cite{SmS}}\label{tab:SmS3}
+\end{table}
+The hardware required for the SMS is summarized in Table~\ref{fig:SMSTable}
+
+
+
 
 \section{Perspectives}
 Write here perspectives (maybe of our own ideas).
