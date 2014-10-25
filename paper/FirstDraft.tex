@@ -872,23 +872,25 @@ Finally, a comparison was made on the hardware overhead of HeLM and three other 
 A proposed solution that addresses the DRAM limitations is a hybrid DRAM/PRAM-based Main Memory. PRAM is a type of non-volatile RAM which stores information as phase-state in a cell. The PRAM’s main advantages over DRAM  are the better-scaling projections and the low idle-power consumption. However, because of the low writing endurance and high-latency for writes, the technology is not a valid replacement for DRAM, being best suited to complement it in the critical points (storage and power consumption).
 
 Combining the benefits of the two technologies, the authors proposed two types of the hybrid system that can hide their weak points. 
-
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width = 8 cm]{graphics/structure-hybrid.png}
 	\caption{(a) Flat structure (b) Hierarchical structure}\label{fig:buff}
 \end{figure} 
-
 First variant is a hierarchical-topology organization, where the DRAM plays the role of a Last-Level Cache and the PRAM is the main memory. However, when regarding the CPU’s needs, a LLC miss would involve a very high latency for fetching the needed data from the main memory. In the projected case, 40 us for retrieving unused data from the PRAM transforms into 40.000 cycles for a 1 GHz CPU, an overhead too big for any out-of-order execution mechanism, assuring a deep stall on every processing unit, thus considerably reducing the IPC count.
 
 The second approach is a flat organization of the two technologies, with the DRAM mainly serving the CPU purposes, and the PRAM meant for the GPU side. This kind of implementation has several advantages over the hierarchical:
 \begin{itemize}
-\item
-It eliminates the issue of very high miss penalty on the LLC (DRAM for that proposal).
-\item
-It separates the memory-buses, avoiding possible GPU-CPU conflicts in critical points, such as the synchronization of complex CPU applications with memory-hungry GPU activity.
+\item{It eliminates the issue of very high miss penalty on the LLC (DRAM for that proposal).}
+\item{It separates the memory-buses, avoiding possible GPU-CPU conflicts in critical points, such as the synchronization of complex CPU applications with memory-hungry GPU activity.}
 \end{itemize}
 
+\begin{figure}[b]
+	\centering
+	\includegraphics[width = 8 cm]{graphics/StructureWithBuffer.png}
+	\caption{Overall view of the proposed hybrid structure with hot-write DRAM buffer}\label{fig:buff}
+\end{figure} 
+However, having the GPU working only with the PRAM memory can result in missing deadlines (because of the high write-latency), when write-intensive applications are under execution. Therefore, a dynamic hot-write buffer has been created in the DRAM memory to handle successive write requests to GPU main memory.
 
 \subsection{Staged memory scheduling}
 The proposed solution is a new memory controller (MC), Staged Memory Scheduling (SMS),  that is a simpler implementation in hardware and provides performance and fairness improvements over the application-aware MC.  It is split into three stages, the batch formation, batch scheduler and a DRAM command scheduler.
