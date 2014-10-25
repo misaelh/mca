@@ -227,10 +227,16 @@ DRAM Command Scheduler:   Compared to the monolithic scheduler the DRAM command 
 The hardware required for the SMS is summarized in Table~\ref{fig:SMSTable}
 
 \section{Comparisons}
-Comparisons here
+\subsection{Hybrid memory system}
+Regarding the baseline in \cite{PRAM}, although the improvements in energy consumption and memory size constraints do matter, a PRAM-only main memory system shows significant slowdowns for a regular SoC. The performance overhead is in average about 40 \% making it not suitable for deployment in current computer architecture designs. 
 
+For tackling the big overhead issue, the hybrid system has been proposed. 
+
+The PRAM/DRAM main memory system significantly improves performance for the GPU, with small overhead on the CPU side. As presented in the experiments, the improvement over an uniform PRAM main memory is in average 24, using the DL+CM memory management for the hot-write buffer. However, the reduction in CPU IPC can go up to 33 \% \cite{PRAM}for the SL+CM and 23.6 \% with the DL+CM, taking in account a 8K entries (64B per entry) buffer. 
+
+Regarding the energy consumption constraints, the proposed solution show savings ranging from 12 to 50 \% in comparison with the DRAM-only main memory baseline system\cite{PDRAM}.
 \section{Perspectives}
-Write here perspectives (maybe of our own ideas).
+Write here perspectives (maybe of our own ideas). 
 
 \section{Conclusion}
 Drop the memory. It's slow anyway
@@ -248,13 +254,7 @@ Drop the memory. It's slow anyway
 
 \bibliography{ref}
 
-
 \newpage
-
-
-
 
 % that's all folks
 \end{document}
-
-
