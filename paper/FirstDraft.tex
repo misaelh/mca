@@ -480,7 +480,7 @@
 \newcommand\MYhyperrefoptions{bookmarks=true,bookmarksnumbered=true,
 pdfpagemode={UseOutlines},plainpages=false,pdfpagelabels=true,
 colorlinks=true,linkcolor={black},citecolor={black},urlcolor={black},
-pdftitle={Bare Demo of IEEEtran.cls for Computer Society Journals},%<!CHANGE!
+pdftitle={Memory Constraints and Solutions for Heterogeneous SoC},%<!CHANGE!
 pdfsubject={Typesetting},%<!CHANGE!
 pdfauthor={Michael D. Shell},%<!CHANGE!
 pdfkeywords={Computer Society, IEEEtran, journal, LaTeX, paper,
@@ -549,7 +549,7 @@ pdfkeywords={Computer Society, IEEEtran, journal, LaTeX, paper,
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
 % Do not put math or special symbols in the title.
-\title{Bare Advanced Demo of IEEEtran.cls\\ for Computer Society Journals}
+\title{Memory Constraints and Solutions \\ for Heterogeneous SoC}
 %
 %
 % author names and IEEE memberships
@@ -831,6 +831,21 @@ The increased buffer size does not come without a cost. It increases circuit com
 \subsection{Cache line allocation in shared LLC}
 The proposed solution is a new cache management policy called HeLM (Heterogeneous LLC Management). It consists on measuring the cache sensitivity of the GPU and CPU, and based on some thresholds decide if a GPU access request to the LLC should be bypassed directly to the main memory or not.
 It is based on the fact that GPUs have a much higher TLP than CPUs, and thus are less affected by longer memory access latency. Having a high TLP means that there will most likely be some threads that can be ran while waiting for the memory to respond. If that is the case, bypassing the cache should not affect the IPC count.
+
+\subsection{Hybrid-technology memory system}
+A proposed solution that addresses the DRAM limitations is a hybrid DRAM/PRAM-based Main Memory. PRAM is a type of non-volatile RAM which stores information as phase-state in a cell. The PRAM’s main advantages over DRAM  are the better-scaling projections and the low idle-power consumption. However, because of the low writing endurance and high-latency for writes, the technology is not a valid replacement for DRAM, being best suited to complement it in the critical points (storage and power consumption).
+
+Combining the benefits of the two technologies, the authors proposed two types of the hybrid system that can hide their weak points. 
+
+First variant is a hierarchical-topology organization, where the DRAM plays the role of a Last-Level Cache and the PRAM is the main memory. However, when regarding the CPU’s needs, a LLC miss would involve a very high latency for fetching the needed data from the main memory. In the projected case, 40 us for retrieving unused data from the PRAM transforms into 40.000 cycles for a 1 GHz CPU, an overhead too big for any out-of-order execution mechanism, assuring a deep stall on every processing unit, thus considerably reducing the IPC count.
+
+The second approach is a flat organization of the two technologies, with the DRAM mainly serving the CPU purposes, and the PRAM meant for the GPU side. This kind of implementation has several advantages over the hierarchical:
+\begin{itemize}
+\item
+It eliminates the issue of very high miss penalty on the LLC (DRAM for that proposal).
+\item
+It separates the memory-buses, avoiding possible GPU-CPU conflicts in critical points, such as the synchronization of complex CPU applications with memory-hungry GPU activity.
+\end{itemize}
 
 \subsection{Staged memory scheduling}
 Some stuff on the SMS coming up...
