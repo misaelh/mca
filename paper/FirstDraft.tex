@@ -246,6 +246,16 @@ Figure~\ref{fig:comp1} shows the weighted average of the speedup for CPU and GPU
 
 Finally, a comparison was made on the hardware overhead of HeLM and three other cache management policies. Figure~\ref{fig:LLChw} shows an explanation of the extra hardware needed for each cache policy and a count of the number of flip-flops needed to implement it. As can be seen, the policy with the least overhead is TAP, however it is not a big difference in comparison to HeLM. On the other hand, the speedup achieved by HeLM is considerably higher than TAP.
 
+
+\subsection{Hybrid memory system}
+Regarding the baseline in \cite{PRAM}, although the improvements in energy consumption and memory size constraints do matter, a PRAM-only main memory system shows significant slowdowns for a regular SoC. The performance overhead is in average about 40 \% making it not suitable for deployment in current computer architecture designs. 
+
+For tackling the big overhead issue, the hybrid system has been proposed. 
+
+The PRAM/DRAM main memory system significantly improves performance for the GPU, with small overhead on the CPU side. As presented in the experiments, the improvement over an uniform PRAM main memory is in average 24, using the DL+CM (dynamic list) memory management for the hot-write buffer. However, the reduction in CPU IPC can go up to 33\% for the SL+CM and 23.6\% with the DL+CM, taking in account a 8K entries (64B per entry) buffer\cite{PRAM}. 
+
+Regarding the energy consumption constraints, the proposed solution in \cite{PDRAM} shows savings ranging from 12 to 50\% in comparison with the DRAM-only main memory baseline system.
+
 \subsection{Memory Scheduling}
 The SMS is compared to three state-of-the-art memory scheduler configurations: FR-FCFS, ATLAS and TCM.  It is both compared having p = 0.9, i.e  90\% probability of using SJF, and with p = 0 where the batch scheduler always picks the round-robin policy.
 
@@ -290,14 +300,14 @@ In systems where GPU performance matters more to the user, e.g gaming, SMS$_0$ p
 	\caption{System performance for 7 workload categories (105 workloads) for SMS$_0$ \cite{SmS}}\label{fig:SmS_GPU_1000}
 \end{figure}
 
-\subsection{Hybrid memory system}
-Regarding the baseline in \cite{PRAM}, although the improvements in energy consumption and memory size constraints do matter, a PRAM-only main memory system shows significant slowdowns for a regular SoC. The performance overhead is in average about 40 \% making it not suitable for deployment in current computer architecture designs. 
+\subsection{Hardware overhead of the proposed solutions}
+For the implementation of HeLM as an LLC cache management policy, several counters and registered are needed. First of all, to identify the cache sensitivity of the GPU application an instruction counter per core is needed (20 bits x 4), as well as some core IDs (10-bit x 4). To count and compare the CPU cache misses with each of the two thresholds, two new counters are also needed (20-bit x 2). Finally, a register is used to hold the LLC bypass threshold selected by the management policy (6 bits). In total, this solution inserts an overhead of 166 bits.
 
-For tackling the big overhead issue, the hybrid system has been proposed. 
+In the case of the hybrid DRAM/PRAM solution, the overhead is represented by a write address list which is implemented as a cache. Based on the emperical information gathered by the researchers, the address list ranges from 1K to 8K entries. Each entry contains a DRAM and a PRAM address, amounting to 79 bits. This means that the area can fluctuate from a minimum of 9KB (approximately 1K*79b) to a maximum of 79KB (= 8K*79b).
 
-The PRAM/DRAM main memory system significantly improves performance for the GPU, with small overhead on the CPU side. As presented in the experiments, the improvement over an uniform PRAM main memory is in average 24, using the DL+CM (dynamic list) memory management for the hot-write buffer. However, the reduction in CPU IPC can go up to 33\% for the SL+CM and 23.6\% with the DL+CM, taking in account a 8K entries (64B per entry) buffer\cite{PRAM}. 
+Finally, the SMS memory scheduler hardware overhead can be calculated using the formulas given in Figure~\label{tab:SmS1}, Figure~\label{tab:SmS2} and Figure~\label{tab:SmS3}. The data shown in the figures was calculated for 16 CPU cores and 1 GPU core. For comparison, the stimulation will be based on 4 GPUs and 4 CPUs such as one of the configurations of the HeLM solution. By using a rule of three, it can be calculated that 40 entries are needed for the CPU FIFO queues and 80 for the GPU ones. The MPKC counters will have 40 bits, and the last requests row index another 96 bits.
 
-Regarding the energy consumption constraints, the proposed solution in \cite{PDRAM} shows savings ranging from 12 to 50\% in comparison with the DRAM-only main memory baseline system.
+For Stage 2, the CPU memory request counters will represent 20 bits, while the GPU ones another 40 bits. Finally for Stage 3, the PerBank FIFO queues will have 120 entries supposing we have the same DRAM memory.
 
 \section{Conclusion}
 Recent developments in the field of main memory shows a broad in horizons, as researchers try to evaluate several different paths and approaches towards for paving the way for another decade of sustained scaling. 
