@@ -75,31 +75,27 @@ One of the issues related to memory management in CPU-GPU solutions that is curr
 
 GPUs support a considerably larger amount of threads. Coupled with the fact that many GPU applications are cache insensitive, meaning that there is almost zero reuse of cache lines, the GPU can significantly interfere with the CPU memory accesses. This can happen up to the point where CPU cores suffer from starvation, causing a heavy drop on the performance, measured as the IPC.
 
-Diving deeper into the DRAM, bandwidth is not the only limitation. The emerging market of mobile devices uses tightly integrated hardware for addressing the consumer's needs in terms of portability, processing power and energy consumption. The trend for smartphones and tablets has only one direction: slimmer and lighter devices. This trend forces a shrink on every subcomponent or a greater efficiency. While battery needs also to shrink (the LiPo capacity has a very low improvement rate), the energy consumption has to decrease without significantly influencing the processing improvement trend. 
-
-Strictly speaking, a device's main memory needs to have greater capacity in smaller packages with lower energy consumption. Although the improvement in bandwidth is projected for another decade (LPDDR4 and its descendants), the power and area constraints push more and more against this technology.
-
-\subsection{Cache line allocation in shared LLC}
-Many modern solutions are starting to integrate CPUs and GPUs in the same die. For easier and cheaper integration into the existent memory architecture, both types of cores share the last-level cache. Most cache replacement policies were designed for homogeneous configurations, so they are not efficient in these cases.
-
-Policies like LRU and DDRIP will favor the GPUs when allocating cache lines due to the fact that their memory access rates are orders of magnitude higher than the CPUs. GPU applications tend to be more latency tolerant while CPU ones are more latency intolerant. So favoring GPUs in cache allocation cause a considerable decrease in the CPUs IPC, while the GPUs IPC is only marginally improved. The ideal cache replacement policy would take into consideration the latency requirements of most CPU applications by ensuring their blocks last longer in the cache.
-A replacement policy that takes this
-
-\subsection{Memory scheduling}
-When a CPU and GPU are integrated on the same chip and share the same off-chip memory the bandwidth demanding GPU can starve the cores of the CPU on lead to a all over poor system performance \cite{SmS}.  State of the art memory controllers (MC) have mainly been focused on a multi-core CPUs and not on the joint venture of CPU-GPU SoCs.  To make the applications-aware memory scheduling work on GPU-CPU SoC a very large request buffer is needed.
-
-Figure~\ref{fig:buff}(a) shows the request buffer of a memory controller where there is only a multi-core CPU.  The MC has a good overview over
-numerous requests from the CPU cores and inside into their memory behavior.  When the buffer is shared between the GPU and CPU, as can be seen in Figure~\ref{fig:buff}(b) the requests from the GPU limit the MC capability of insight into the behavior of requests from the CPU cores.  Figure~\ref{fig:buff}(c) shows larger request buffer so that the MC can observer more requests from the CPU.
+State of the art memory controllers (MC) have mainly been focused on a multi-core CPUs and not on the joint venture of CPU-GPU SoCs.  To make the applications-aware memory scheduling work on GPU-CPU SoC a very large request buffer is needed.
+ 
+Figure~\ref{fig:buff}(a) shows the request buffer of a memory controller where there is only a multi-core CPU.  The MC has a good overview over numerous requests from the CPU cores and inside into their memory behavior.  When the buffer is shared between the GPU and CPU, as can be seen in Figure~\ref{fig:buff}(b) the requests from the GPU limit the MC capability of insight into the behavior of requests from the CPU cores.  Figure~\ref{fig:buff}(c) shows larger request buffer so that the MC can observer more requests from the CPU.
 
 \begin{figure}[H]
-\centering
+	\centering
 	\includegraphics[width = 8 cm]{graphics/no1.png}
 	\caption{Limited visibility example due to small buffer size. (a) CPU-only
-	case, (b) MC’s visibility when CPU and GPU are combined, (c) Improved
-	visibility with a larger request buffer.\cite{SmS}}\label{fig:buff}
+		case, (b) MC’s visibility when CPU and GPU are combined, (c) Improved
+		visibility with a larger request buffer.\cite{SmS}}\label{fig:buff}
 \end{figure} 
 
 The increased buffer size does not come without a cost. It increases circuit complexity and results in a significant larger die area. The larger request buffer also leads to higher power consumption and increased costs \cite{SmS} making it an unattractive solution. 
+
+Another possible solution for this issue would be sharing the LLC between the CPUs and the GPUs. However, most cache replacement policies were designed for homogeneous configurations, so they are not efficient in these cases.
+
+Policies like LRU and DDRIP will favor the GPUs when allocating cache lines due to the fact that their memory access rates are orders of magnitude higher than the CPUs. GPU applications tend to be more latency tolerant while CPU ones are more latency intolerant. So favoring GPUs in cache allocation causes a considerable decrease in the CPUs IPC, while the GPUs IPC is only marginally improved, meaning that this is also far from an ideal solution.
+
+Diving deeper into the DRAM, bandwidth is not the only limitation. The emerging market of mobile devices uses tightly integrated hardware for addressing the consumer's needs in terms of portability, processing power and energy consumption. The trend for smartphones and tablets has only one direction: slimmer and lighter devices. This trend forces a shrink on every subcomponent or a greater efficiency. While battery needs also to shrink (the LiPo capacity has a very low improvement rate), the energy consumption has to decrease without significantly influencing the processing improvement trend. 
+
+Strictly speaking, a device's main memory needs to have greater capacity in smaller packages with lower energy consumption. Although the improvement in bandwidth is projected for another decade (LPDDR4 and its descendants), the power and area constraints push more and more against this technology.
 
 \section{Solutions}
 \subsection{Cache line allocation in shared LLC}
@@ -147,7 +143,7 @@ Combining the benefits of the two technologies, the authors proposed two types o
 \begin{figure}
 	\centering
 	\includegraphics[width = 8 cm]{graphics/structure-hybrid.png}
-	\caption{(a) Flat structure (b) Hierarchical structure}\label{fig:buff}
+	\caption{(a) Flat structure (b) Hierarchical structure}\label{fig:structure}
 \end{figure} 
 First variant is a hierarchical-topology organization, where the DRAM plays the role of a Last-Level Cache and the PRAM is the main memory. However, when regarding the CPU’s needs, a LLC miss would involve a very high latency for fetching the needed data from the main memory. In the projected case, 40 us for retrieving unused data from the PRAM transforms into 40.000 cycles for a 1 GHz CPU, an overhead too big for any out-of-order execution mechanism, assuring a deep stall on every processing unit, thus considerably reducing the IPC count.
 
@@ -159,7 +155,7 @@ The second approach is a flat organization of the two technologies, with the DRA
 \begin{figure}[H]
 	\centering
 	\includegraphics[width = 8 cm]{graphics/StructureWithBuffer.PNG}
-	\caption{Overall view of the proposed hybrid structure with hot-write DRAM buffer}\label{fig:buff}
+	\caption{Overall view of the proposed hybrid structure with hot-write DRAM buffer}\label{fig:structurebuff}
 \end{figure} 
 However, having the GPU working only with the PRAM memory can result in missing deadlines (because of the high write-latency), when write-intensive applications are under execution. Therefore, a dynamic hot-write buffer has been created in the DRAM memory to handle successive write requests to GPU main memory. Furthermore, the hot-write buffer removes the issue of cell wear by reducing the number of writes to a single bit (also by implementing the differential writing mechanism), thus expanding the PRAM's lifetime and reliability.
 
