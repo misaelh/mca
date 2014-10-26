@@ -11,17 +11,18 @@
 
 % *** GRAPHICS RELATED PACKAGES ***
 %
+\usepackage{todonotes}
 \usepackage{float}
 \usepackage[font=small,labelfont=bf]{caption}
 \renewcommand{\figurename}{Figure}
 \renewcommand{\tablename}{Table}
 
-\ifCLASSINFOpdf
-  \usepackage[pdftex]{graphicx}
+%\ifCLASSINFOpdf
+%  \usepackage[pdftex]{graphicx}
 
-\else
+%\else
 
-\fi
+%\fi
 
 \newcommand\MYhyperrefoptions{bookmarks=true,bookmarksnumbered=true,
 pdfpagemode={UseOutlines},plainpages=false,pdfpagelabels=true,
@@ -258,7 +259,7 @@ The CPU benchmarks are classified into three categories based on their memory in
 
 Based on these three categories random benchmarks are picked from each category to make seven different intensity mixes: L (ALL Low), ML (Medium/Low), M (All Medium), HL (High/Low),  HML (High/Medium/Low),  HM (High/Medium) and H (All High).  A co-running GPU benchmark is randomly selected for each workload.
 
-In systems where CPU performance is of more importance than GPU SMS$_{0.9}$ can significantly improve all over system performance while SMS$_0$ reduces performance. As can be seen in Figure \cite{fig:SmS_GPU_1} SMS$_{0.9}$ provides 6.4\%/17.2\%/25.7\% system performance improvement and 244.6\%/47.6\%/205.7\% fairness improvement over FR-FCFS/ATLAS/TCM.
+In systems where CPU performance is of more importance than GPU SMS$_{0.9}$ can significantly improve all over system performance while SMS$_0$ reduces performance. As can be seen in Figure \ref{fig:SmS_GPU_1} SMS$_{0.9}$ provides 6.4\%/17.2\%/25.7\% system performance improvement and 244.6\%/47.6\%/205.7\% fairness improvement over FR-FCFS/ATLAS/TCM.
 But SMS$_0$ provides 6.8\%/33.4\%/24.3\% system performance degradation and 15.2\%/89.7\%/36.7\% fairness degradation over FR-FCFS/ATLAS/TCM, respectively \cite{SmS}
 
 \begin{figure}[H]
@@ -267,7 +268,7 @@ But SMS$_0$ provides 6.8\%/33.4\%/24.3\% system performance degradation and 15.2
 	\caption{System performance and fairness for 7 workload categories (105 workloads) \cite{SmS}}\label{fig:SmS_GPU_1}
 \end{figure}
 
-In systems where GPU performance matters more to the user, e.g gaming, SMS$_0$ provides an all over better performance.  As can be seen in Figure \cite{fig:SmS_GPU_1000}  SMS$_0$ provides 1.6\%/32.7\%/16.4\% system performance improvement, while SMS$_{0.9}$ provides 44.3\%/13.3\%/27.7\% system performance degradation, over FR-FCFS/ATLAS/TCM
+In systems where GPU performance matters more to the user, e.g gaming, SMS$_0$ provides an all over better performance.  As can be seen in Figure \ref{fig:SmS_GPU_1000}  SMS$_0$ provides 1.6\%/32.7\%/16.4\% system performance improvement, while SMS$_{0.9}$ provides 44.3\%/13.3\%/27.7\% system performance degradation, over FR-FCFS/ATLAS/TCM
 
 \begin{figure}[H]
 	\centering
@@ -291,7 +292,7 @@ In this paper, two different approaches have been studied for the evaluation of 
 
 Because of the challenges faced when combining two different execution units (the CPU and the integrated GPU - iGPU) on the same die, the focus has to be shifted to multiple aspects and critical points, such as bandwidth, latency, capacity, reliability and energy consumption. Therefore, it is not enough to balance the load between the two processors, but to dynamically prioritize memory access \cite{LLC} and bandwidth allocation in order to adapt to different types of applications and to improve the overall user experience. 
 
-Aside from application-aware memory allocation, the attention needs to be drawn also to the efficient management of the on-chip request buffer in order to allow a appropiate ratio of instruction fetch for both compute cores, without a significant degradation in performance for neither of them. The staged memory scheduler \cite{SmS} proves a good solution for the presented issue without a considerable impact on die area and costs considerations, taking in account..
+Aside from application-aware memory allocation, the attention needs to be drawn also to the efficient management of the on-chip request buffer in order to allow a appropiate ratio of instruction fetch for both compute \todo[inline, size=\tiny]{Shoulf this not be procceors?  Not cores?} cores, without a significant degradation in performance for neither of them. The staged memory scheduler \cite{SmS} proves a good solution for the presented issue without a considerable impact on die area and costs considerations, taking in account..\todo[inline]{Missing stuff from Saevar}
 
 Regarding the area and energy consumption constraints, the hybrid main-memory organization presented in \cite{PRAM} and \cite{PDRAM} can help extend the roadmap of the current computer architectures, facilitating the integration in low-power devices. The sinergy of the two technologies, combined with the dynamic hot-write buffer and management unit have a very small impact on CPU performance, greatly improving GPU IPC. Therefore, as stated in \cite{PRAM}, the increase in GPU computer power can be leveraged to build more powerful SoCs and make more high-performance compact devices.
 
