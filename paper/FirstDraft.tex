@@ -157,7 +157,7 @@ The second approach is a flat organization of the two technologies, with the DRA
 	\includegraphics[width = 8 cm]{graphics/StructureWithBuffer.PNG}
 	\caption{Overall view of the proposed hybrid structure with hot-write DRAM buffer}\label{fig:structurebuff}
 \end{figure} 
-However, having the GPU working only with the PRAM memory can result in missing deadlines (because of the high write-latency), when write-intensive applications are under execution. Therefore, a dynamic hot-write buffer has been created in the DRAM memory to handle successive write requests to GPU main memory. Furthermore, the hot-write buffer removes the issue of cell wear by reducing the number of writes to a single bit (also by implementing the differential writing mechanism), thus expanding the PRAM's lifetime and reliability.
+However, having the GPU working only with the PRAM memory can result in missing deadlines (because of the high write-latency), when write-intensive applications are under execution. Therefore, a dynamic hot-write buffer has been created in the DRAM memory to handle successive write requests to GPU main memory. Furthermore, the hot-write buffer removes the issue of cell wear by reducing the number of writes to a single bit (also by implementing the differential writing mechanism \cite{PRAM}), thus expanding the PRAM's lifetime and reliability.
 
 \subsection{Staged memory scheduling}
 The proposed solution is a new memory controller (MC), Staged Memory Scheduling (SMS),  that is a simpler implementation in hardware and provides performance and fairness improvements over the application-aware MC.  It is split into three stages, the batch formation, batch scheduler and a DRAM command scheduler.
@@ -275,20 +275,30 @@ In systems where GPU performance matters more to the user, e.g gaming, SMS$_0$ p
 	\caption{System performance for 7 workload categories (105 workloads) for SMS$_0$ \cite{SmS}}\label{fig:SmS_GPU_1000}
 \end{figure}
 
-
 \subsection{Hybrid memory system}
 Regarding the baseline in \cite{PRAM}, although the improvements in energy consumption and memory size constraints do matter, a PRAM-only main memory system shows significant slowdowns for a regular SoC. The performance overhead is in average about 40 \% making it not suitable for deployment in current computer architecture designs. 
 
 For tackling the big overhead issue, the hybrid system has been proposed. 
 
-The PRAM/DRAM main memory system significantly improves performance for the GPU, with small overhead on the CPU side. As presented in the experiments, the improvement over an uniform PRAM main memory is in average 24, using the DL+CM memory management for the hot-write buffer. However, the reduction in CPU IPC can go up to 33 \% \cite{PRAM}for the SL+CM and 23.6 \% with the DL+CM, taking in account a 8K entries (64B per entry) buffer. 
+The PRAM/DRAM main memory system significantly improves performance for the GPU, with small overhead on the CPU side. As presented in the experiments, the improvement over an uniform PRAM main memory is in average 24, using the DL+CM (dynamic list) memory management for the hot-write buffer. However, the reduction in CPU IPC can go up to 33\% for the SL+CM and 23.6\% with the DL+CM, taking in account a 8K entries (64B per entry) buffer\cite{PRAM}. 
 
-Regarding the energy consumption constraints, the proposed solution show savings ranging from 12 to 50 \% in comparison with the DRAM-only main memory baseline system\cite{PDRAM}.
+Regarding the energy consumption constraints, the proposed solution in \cite{PDRAM} shows savings ranging from 12 to 50\% in comparison with the DRAM-only main memory baseline system.
+
+\section{Conclusion}
+Recent developments in the field of main memory shows a broad in horizons, as researchers try to evaluate several different paths and approaches towards for paving the way for another decade of sustained scaling. 
+
+In this paper, two different approaches have been studied for the evaluation of memory systems roadmap: technology-aware improvements (the combination of two technologies that complement each other)  and application-aware solutions (better management of memory resources). 
+
+Because of the challenges faced when combining two different execution units (the CPU and the integrated GPU - iGPU) on the same die, the focus has to be shifted to multiple aspects and critical points, such as bandwidth, latency, capacity, reliability and energy consumption. Therefore, it is not enough to balance the load between the two processors, but to dynamically prioritize memory access \cite{LLC} and bandwidth allocation in order to adapt to different types of applications and to improve the overall user experience. 
+
+Aside from application-aware memory allocation, the attention needs to be drawn also to the efficient management of the on-chip request buffer in order to allow a appropiate ratio of instruction fetch for both compute cores, without a significant degradation in performance for neither of them. The staged memory scheduler \cite{SmS} proves a good solution for the presented issue without a considerable impact on die area and costs considerations, taking in account..
+
+Regarding the area and energy consumption constraints, the hybrid main-memory organization presented in \cite{PRAM} and \cite{PDRAM} can help extend the roadmap of the current computer architectures, facilitating the integration in low-power devices. The sinergy of the two technologies, combined with the dynamic hot-write buffer and management unit have a very small impact on CPU performance, greatly improving GPU IPC. Therefore, as stated in \cite{PRAM}, the increase in GPU computer power can be leveraged to build more powerful SoCs and make more high-performance compact devices.
+
 \section{Perspectives}
 Write here perspectives (maybe of our own ideas). 
 
-\section{Conclusion}
-Drop the memory. It's slow anyway
+
 
 % use section* for acknowledgement
 \ifCLASSOPTIONcompsoc
