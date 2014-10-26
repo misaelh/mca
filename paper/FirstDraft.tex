@@ -228,9 +228,54 @@ DRAM Command Scheduler:   Compared to the monolithic scheduler the DRAM command 
   \end{minipage} }
   \caption{Storage Overhead of Stage 3: DRAM Command Scheduler \cite{SmS}}\label{tab:SmS3}
 \end{table}
-The hardware required for the SMS is summarized in Table~\ref{fig:SMSTable}
+
 
 \section{Comparisons}
+\subsection{Memory Scheduling}
+The SMS is compared to three state-of-the-art memory scheduler configurations: FR-FCFS, ATLAS and TCM.  It is both compared having p = 0.9, i.e  90\% probability of using SJF, and with p = 0 where the batch scheduler always picks the round-robin policy.
+
+For evaluation of the system a set of 105 multi programmed workloads are used each consisting of sixteen SPEC CPU 2006 benchmarks and one GPU application.  
+
+To compare the performance of the different schedulers CPU-GPU Weighted Speedup (CGWS) metric (Eqn \ref{eq:CGWS})  is used.
+
+\begin{equation}
+CGWS = CPU_{WS} + GPU_{weight}*GPU_{speedup} \label{eq:CGWS}
+\end{equation} 
+
+Where
+ 
+\begin{equation}
+CPI_{WS} = \sum_{i=1}^{NumCores}\frac{IPC_i^{shared}}{IPC_i^{alone}}
+\end{equation}
+
+And 
+
+\begin{equation}
+GPU_{Speedup} = \frac{GPU_{FramRate}^{shared}}{GPU_{FramRate}^{alone}}
+\end{equation}
+
+The CPU benchmarks are classified into three categories based on their memory intensity measured as last level cache misses per thousand instructions (MPKI): LOW, MEDIUM and HIGH where L $<$ 1 $<$ M $<$ 15 $<$ H MPKI.
+
+Based on these three categories random benchmarks are picked from each category to make seven different intensity mixes: L (ALL Low), ML (Medium/Low), M (All Medium), HL (High/Low),  HML (High/Medium/Low),  HM (High/Medium) and H (All High).  A co-running GPU benchmark is randomly selected for each workload.
+
+In systems where CPU performance is of more importance than GPU SMS$_{0.9}$ can significantly improve all over system performance while SMS$_0$ reduces performance. As can be seen in Figure \cite{fig:SmS_GPU_1} SMS$_{0.9}$ provides 6.4\%/17.2\%/25.7\% system performance improvement and 244.6\%/47.6\%/205.7\% fairness improvement over FR-FCFS/ATLAS/TCM.
+But SMS$_0$ provides 6.8\%/33.4\%/24.3\% system performance degradation and 15.2\%/89.7\%/36.7\% fairness degradation over FR-FCFS/ATLAS/TCM, respectively \cite{SmS}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 9.2 cm]{graphics/GPU_W_1.png}
+	\caption{System performance and fairness for 7 workload categories (105 workloads) \cite{SmS}}\label{fig:SmS_GPU_1}
+\end{figure}
+
+In systems where GPU performance matters more to the user, e.g gaming, SMS$_0$ provides an all over better performance.  As can be seen in Figure \cite{fig:SmS_GPU_1000}  SMS$_0$ provides 1.6\%/32.7\%/16.4\% system performance improvement, while SMS$_{0.9}$ provides 44.3\%/13.3\%/27.7\% system performance degradation, over FR-FCFS/ATLAS/TCM
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 9 cm]{graphics/GPU_W_1000.png}
+	\caption{System performance for 7 workload categories (105 workloads) for SMS$_0$ \cite{SmS}}\label{fig:SmS_GPU_1000}
+\end{figure}
+
+
 \subsection{Hybrid memory system}
 Regarding the baseline in \cite{PRAM}, although the improvements in energy consumption and memory size constraints do matter, a PRAM-only main memory system shows significant slowdowns for a regular SoC. The performance overhead is in average about 40 \% making it not suitable for deployment in current computer architecture designs. 
 
