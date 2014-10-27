@@ -126,7 +126,7 @@ Combining the benefits of the two technologies, the authors proposed two types o
 \begin{figure}
 	\centering
 	\includegraphics[width = 8 cm]{graphics/structure-hybrid.png}
-	\caption{(a) Flat structure (b) Hierarchical structure}\label{fig:structure}
+	\caption{Hybrid structure of PRAM/DRAM main-memory system: (a) Flat structure (b) Hierarchical structure \cite{PRAM}}\label{fig:structure}
 \end{figure} 
 First variant is a hierarchical memory organization, where the DRAM plays the role of a Last-Level Cache and the PRAM is the main memory. However, when regarding the CPU’s needs, a LLC miss would involve a bigger latency (98 ns for the PRAM against 45 ns for DRAM) for fetching the needed data from the main memory. Moreover, while the write-through policy would be impossible to apply (very high write cycle of PRAM - around 40 $\mu s$), the write-back would also stall the CPU when data bursts are sent to the LLC and fill it up. Therefore, without a significant amount of memory size for the LLC, the hierarchical organization of the hybrid memory system can significantly decrease the IPC (for a 1 GHz CPU a wait on writing to the main memory would take approximatively 40.000 cycles).
 
@@ -138,13 +138,13 @@ The second approach is a flat organization of the two technologies, with the DRA
 \begin{figure}[H]
 	\centering
 	\includegraphics[width = 8 cm]{graphics/StructureWithBuffer.PNG}
-	\caption{Overall view of the proposed hybrid structure with hot-write DRAM buffer}\label{fig:structurebuff}
+	\caption{Overall view of the proposed hybrid structure with hot-write DRAM buffer \cite{PRAM}}\label{fig:structurebuff}
 \end{figure} 
 However, having the GPU working only with the PRAM memory can result in missing deadlines (because of the high write-latency), when write-intensive applications are under execution. Therefore, a dynamic hot-write buffer has been created in the DRAM memory to handle successive write requests to GPU main memory. 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width = 9 cm]{graphics/hot-write.PNG}
-	\caption{Write address list used to keep track of frequency of PRAM memory usage }\label{fig:hotwrite}
+	\caption{Write address list used to keep track of frequency of PRAM memory usage \cite{PRAM}}\label{fig:hotwrite}
 \end{figure} 
 The in-DRAM write buffer should store important and frequently accessed data from the GPU. For this purpose, a hot write data management policy which identifies write-intensive data has been implemented. Therefore, a write address list will be used to store the memory entries (as presented in Figure \ref{fig:hotwrite}), with original addresses residing in the PRAM. The mentioned list is divided in two: a cold and a hot region. When a new GPU memory address is accessed, it gets inserted in the list at the beginning of the hot region. The entries already in the list are upgraded/downgraded one rank if they are used/superseded in use by another memory location (each entry consists of 64 B). If a list item falls out of the list , it gets evicted from the in-DRAM buffer and written to the PRAM.
 
@@ -349,24 +349,29 @@ Finally, the SMS memory scheduler hardware overhead can be calculated using the 
 
 \section{Analysis}
 The issues that have arose with the integration of GPU on the same die with the CPU need tackling on different fronts in order to take benefit of the increase in raw computing power that a heterogeneous SoC exhibits. 
-The LLC management technique and the staged memory scheduler are sequential improvements that can be made to a SoC without changing the overall system architecture. Therefore, both of the solutions can be integrated in the design of current processing systems. The outcome of the integration can show improvements on two important steps in the data access blocks:
+The LLC management technique, the staged memory scheduler and the dynamic QoS are sequential improvements that can be made integrated into a heterogeneous SoC without changing the overall system architecture. Therefore, the previously mentioned solutions can be integrated in the design of current processing systems. The outcome of the integration can show improvements on three important steps in the data access blocks:
 \begin{itemize}
 	\item
-	increase in the LLC cache hit ratio for the GPU
+	Increase in the LLC cache hit ratio for the GPU.
 	\item
-	better instruction fetch by reorganizing the conventional request buffer 
+	Better instruction fetch by reorganizing the conventional request buffer.
+	\item
+	Improved end-user experience by means of enriched GPU rendering quality with minimal impact on CPU performance.
 \end{itemize}
-The hybrid memory system comes to complement the two previously mentioned solution in terms of system scaling. 
+
+The hybrid memory system comes to complement the two previously mentioned solution in terms of system scaling, i.e. where such a bound constrains performance.
 
 To be able to compare the three solutions, two cases were analyzed. The first case consists on fields where small area and low power consumption are a priority, such as embedded systems for Internet of Things and similar applications. Given such requirements, simpler and more efficient solutions are preferred over high performance ones.
 
 Of the three papers analyzed, the HeLM cache management policy requires the least hardware overhead, just 166 bits, and thus the least chip and board area increase, while still offering a considerable speedup of at least 7.7\% up to 12.5\% compared to LRU, the simplest other solution. In terms of energy consumption, it could be argued that bypassing the LLC would cause an increase in accesses to the off-chip memory, however much of the bypassing is done whenever the application being run is cache insensitive. In that case most LLC accesses will miss and the main memory will still have to be used anyway. This means that energy-wise, a slight benefit could be seen by not having to go through the LLC.
 
-On the other hand, the PRAM solution would require the addition of another memory module to the board which means bigger form factor and higher costs. Not just that, but the need for having an extra cache on-chip, with a more considerable size of 79 kilobytes, means that this is the most cumbersome proposal. However, PRAM is a non-volatile memory, meaning that it can be completely turned off with zero power consumption for the highest sleep modes. This is a very powerful and useful ability for very low consumption systems.
+On the other hand, the PRAM solution would require the addition of another memory module to the board which means bigger form factor and higher costs. Not just that, but the need for having an extra cache on-chip, with a more considerable size of 79 kilobytes, means that this is the most cumbersome proposal. However, PRAM is a non-volatile memory, meaning that it can be completely turned off with zero power consumption for the deepest sleep modes. This is a very powerful and useful ability for very low consumption systems.
 
 The memory scheduler solution can be considered a middle point between the two previous onces. Its speedup is at least 6.4\% but can be as much as 25.7\% compared to other state-of-the-art alternatives. Its overhead is mostly on on-chip area, and consists of 130 bits and 3 different queues of 40, 20 and 120 entries. Compared to HeLM, the difference in overhead is big, but still with a smaller footprint than PRAM.
 
-The second case that was analyzed consisted on having the best performance regardless of other factors, like area and power consumption. In this case, the memory scheduling solution would be the most appropriate since its speedup is the biggest of the three. The HelM cache management policy could also be a good offer, but it doesn't perform as good and it wouldn't be advisable to have both of them since they mostly overlap and the improvement could be negligible. PRAM would simply not be a good solution since it offers a worse performance than just using DRAM. However it would be very desirable in systems with a big need for reduced power consumption and a big amount of main memory.
+The second case that was analyzed consisted on having the best performance regardless of other factors, like area and power consumption. In this case, the memory scheduling solution would be the most appropriate since its speedup is the biggest of the three. The HeLM cache management policy could also be a good offer, but it doesn't perform as good and it wouldn't be advisable to have both of them since they mostly overlap and the improvement could be negligible. PRAM would simply not be a good solution since it offers a worse performance than just using DRAM. However it would be very desirable in systems with a big need for reduced power consumption and a big amount of main memory.
+
+For the sake of keeping an adequate user-experience when using the GPU for graphics rendering, the dynamic QoS policy can be thrown into play. This is the case of mobile game consoles, where a bandwidth-bounded GPU can dramatically reduce the device's overall usability. Integrating the mechanism into the memory controller favors priority for the CPU, while keeping an acceptable level of frame rate for the GPU.
 
 \section{Conclusion}
 Recent developments in the field of main memory shows a broad in horizons, as researchers try to evaluate several different paths and approaches towards paving the way for another decade of sustained scaling. 
