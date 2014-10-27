@@ -116,7 +116,7 @@ What all this means is that the CPU will be given preference over the GPU in cac
 \end{figure} 
 
 \subsection{Hybrid-technology memory system}
-A proposed solution that addresses the DRAM limitations is a hybrid DRAM/PRAM-based Main Memory. PRAM is a type of non-volatile RAM which stores information as phase-state in a cell. The PRAM’s main advantages over DRAM  are the better-scaling projections and the low idle-power consumption. However, because of the low writing endurance and high-latency for writes, the technology is not a valid replacement for DRAM, being best suited to complement it in the critical points (storage and power consumption).
+Regarding the issue with the scaling of DRAM technology, the authors in \cite{PDRAM} and \cite{PRAM} proposed a hybrid DRAM/PRAM-based Main Memory. PRAM is a type of non-volatile RAM which stores information as phase-state in a cell. The PRAM’s main advantages over DRAM  are the better-scaling projections, the low idle-power consumption and the property of non-volatility. However, because of the low writing endurance and high-latency for writes (more detailed characteristics of the PRAM technology are also described in \cite{PDRAM} and \cite{PRAM}), the technology is not a valid replacement for DRAM, being best suited to complement it in the critical points (storage and power consumption).
 
 Combining the benefits of the two technologies, the authors proposed two types of the hybrid system that can hide their weak points. 
 \begin{figure}
@@ -124,11 +124,11 @@ Combining the benefits of the two technologies, the authors proposed two types o
 	\includegraphics[width = 8 cm]{graphics/structure-hybrid.png}
 	\caption{(a) Flat structure (b) Hierarchical structure}\label{fig:structure}
 \end{figure} 
-First variant is a hierarchical-topology organization, where the DRAM plays the role of a Last-Level Cache and the PRAM is the main memory. However, when regarding the CPU’s needs, a LLC miss would involve a very high latency for fetching the needed data from the main memory. In the projected case, 40 us for retrieving unused data from the PRAM transforms into 40.000 cycles for a 1 GHz CPU, an overhead too big for any out-of-order execution mechanism, assuring a deep stall on every processing unit, thus considerably reducing the IPC count.
+First variant is a hierarchical memory organization, where the DRAM plays the role of a Last-Level Cache and the PRAM is the main memory. However, when regarding the CPU’s needs, a LLC miss would involve a bigger latency (98 ns for the PRAM against 45 ns for DRAM) for fetching the needed data from the main memory. Moreover, while the write-through policy would be impossible to apply (very high write cycle of PRAM - around 40 us), the write-back would also stall the CPU when data bursts are sent to the LLC and fill it up. Therefore, without a significant amount of memory size for the LLC, the hierarchical organization of the hybrid memory system can significantly decrease the IPC (for a 1 GHz CPU a wait on writing to the main memory would take approximatively 40.000 cycles).
 
 The second approach is a flat organization of the two technologies, with the DRAM mainly serving the CPU purposes, and the PRAM meant for the GPU side. This kind of implementation has several advantages over the hierarchical:
 \begin{itemize}
-\item{It eliminates the issue of very high miss penalty on the LLC (DRAM for that proposal).}
+\item{It eliminates the issue of a bigger miss penalty on the LLC (DRAM for that proposal).}
 \item{It separates the memory-buses, avoiding possible GPU-CPU conflicts in critical points, such as the synchronization of complex CPU applications with memory-hungry GPU activity.}
 \end{itemize}
 \begin{figure}[H]
@@ -147,7 +147,7 @@ The in-DRAM write buffer should store important and frequently accessed data fro
 Furthermore, the hot-write buffer removes the issue of cell wear by reducing the number of writes to a single bit (also by implementing the differential writing mechanism \cite{PRAM}), thus expanding the PRAM's lifetime and reliability.
 
 \subsection{Staged memory scheduling}
-The proposed solution is a new memory controller (MC), Staged Memory Scheduling (SMS),  that is a simpler implementation in hardware and provides performance and fairness improvements over the application-aware MC.  It is split into three stages, the batch formation, batch scheduler and a DRAM command scheduler.
+A proposal to solve the request buffer issue is a new memory controller (MC), Staged Memory Scheduling (SMS), that is a simpler implementation in hardware and provides performance and fairness improvements over the application-aware MC. It is split into three stages, the batch formation, batch scheduler and a DRAM command scheduler.
 
 \begin{figure}[H]
 	\centering
@@ -155,7 +155,7 @@ The proposed solution is a new memory controller (MC), Staged Memory Scheduling 
 	\caption{organization of the SMS \cite{SmS}}
 \end{figure}
 
-The batch formation is focused on row-buffer locality.  It groups together requests from applications that want to access the same row in the main memory. The second stage , the batch scheduler, schedules batches from different applications and the third stage, the DRAM Command Scheduler schedules requests while satisfying all DRAM constrains \cite{SmS}
+The batch formation is focused on row-buffer locality.  It groups together requests from applications that want to access the same row in the main memory. The second stage, the batch scheduler, schedules batches from different applications and the third stage, the DRAM Command Scheduler schedules requests while satisfying all DRAM constrains \cite{SmS}
 
 Stage 1: Is built from simple FIFO structures that have one structure per sources.  One source is a single CPU-core or the GPU.  One batch is one or more memory requests from the same source that request access to the same DRAM row.  A batch is only ready when a request to a new DRAM row comes in, it is full or when the oldest request in the batch has exceeded a predefined age threshold.  A batch that is considered ready moves to stage 2 the Batch scheduler.
 
@@ -187,7 +187,7 @@ Batch Formation:  The hardware implementation for stage can be of a fairly simpl
   \caption{Storage Overhead of Stage 1: Batch formation stage \cite{SmS}}\label{tab:SmS1}
 \end{table}
 
-Batch Scheduler:  The batch scheduler does not need to be very complex as it only schedules FIFOS that are as many as there are sources or cores.  When SJF is applied a tree of MIN operators can be build from the out standing batches.  As the batches are not many the tree will not get very large. The hardware overhead can be seen in Table \ref{tab:SmS2}
+Batch Scheduler:  The batch scheduler does not need to be very complex as it only schedules FIFOs that are as many as there are sources or cores.  When SJF is applied a tree of MIN operators can be build from the out standing batches.  As the batches are not many the tree will not get very large. The hardware overhead can be seen in Table \ref{tab:SmS2}
 
 \begin{table}[H]
   \centering
@@ -248,13 +248,13 @@ Finally, a comparison was made on the hardware overhead of HeLM and three other 
 
 
 \subsection{Hybrid memory system}
-Regarding the baseline in \cite{PRAM}, although the improvements in energy consumption and memory size constraints do matter, a PRAM-only main memory system shows significant slowdowns for a regular SoC. The performance overhead is in average about 40 \% making it not suitable for deployment in current computer architecture designs. 
+Regarding the baseline in \cite{PDRAM}, although the improvements in energy consumption and memory size constraints do matter, a PRAM-only main memory system shows significant slowdowns for a regular SoC. The performance overhead is in average about 40\% making it not suitable for deployment in current computer architecture designs. 
 
 For tackling the big overhead issue, the hybrid system has been proposed. 
 
 The PRAM/DRAM main memory system significantly improves performance for the GPU, with small overhead on the CPU side. As presented in the experiments, the improvement over an uniform PRAM main memory is in average 24, using the DL+CM (dynamic list) memory management for the hot-write buffer. However, the reduction in CPU IPC can go up to 33\% for the SL+CM and 23.6\% with the DL+CM, taking in account a 8K entries (64B per entry) buffer\cite{PRAM}. 
 
-Regarding the energy consumption constraints, the proposed solution in \cite{PDRAM} shows savings ranging from 12 to 50\% in comparison with the DRAM-only main memory baseline system.
+Regarding the energy consumption constraints, the proposed solution in \cite{PDRAM} shows savings ranging from 12 to 50\% in comparison with the DRAM-only main memory baseline system. 
 
 \subsection{Memory Scheduling}
 The SMS is compared to three state-of-the-art memory scheduler configurations: FR-FCFS, ATLAS and TCM.  It is both compared having p = 0.9, i.e  90\% probability of using SJF, and with p = 0 where the batch scheduler always picks the round-robin policy.
@@ -303,7 +303,7 @@ In systems where GPU performance matters more to the user, e.g gaming, SMS$_0$ p
 \subsection{Hardware overhead of the proposed solutions}
 For the implementation of HeLM as an LLC cache management policy, several counters and registered are needed. First of all, to identify the cache sensitivity of the GPU application an instruction counter per core is needed (20 bits x 4), as well as some core IDs (10-bit x 4). To count and compare the CPU cache misses with each of the two thresholds, two new counters are also needed (20-bit x 2). Finally, a register is used to hold the LLC bypass threshold selected by the management policy (6 bits). In total, this solution inserts an overhead of 166 bits.
 
-In the case of the hybrid DRAM/PRAM solution, the overhead is represented by a write address list which is implemented as a cache. Based on the emperical information gathered by the researchers, the address list ranges from 1K to 8K entries. Each entry contains a DRAM and a PRAM address, amounting to 79 bits. This means that the area can fluctuate from a minimum of 9KB (approximately 1K*79b) to a maximum of 79KB (= 8K*79b).
+In the case of the hybrid DRAM/PRAM solution, the overhead is represented by a write address list which is implemented as a cache. Based on the empirical information gathered by the researchers, the address list ranges from 1K to 8K entries. Each entry contains a DRAM and a PRAM address, amounting to 79 bits. This means that the area can fluctuate from a minimum of 9KB (approximately 1K*79b) to a maximum of 79KB (= 8K*79b) - last one chosen as the best of option with fairly good improvements in GPU performance.
 
 Finally, the SMS memory scheduler hardware overhead can be calculated using the formulas given in Table~\ref{tab:SmS1}, Table~\ref{tab:SmS2} and Table~\ref{tab:SmS3}. The data shown in the tables was calculated for 16 CPU cores and 1 GPU core. For comparison, the stimulation will be based on 4 GPUs and 4 CPUs such as one of the configurations of the HeLM solution. By using a rule of three, it can be calculated that 40 entries are needed for the CPU FIFO queues and 80 for the GPU ones. The MPKC counters will have 40 bits, and the last requests row index another 96 bits.
 
