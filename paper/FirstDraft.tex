@@ -213,7 +213,7 @@ DRAM Command Scheduler:   Compared to the monolithic scheduler the DRAM command 
 		Per-Bank FIFO queues			& $N_{banks} × Queue\_Size_{bank} = 120 entries$ 					\\\hline
 	\end{tabular}
   \end{minipage} }
-  \caption{Storage Overhead of Stage 3: DRAM Command Scheduler \cite{SmS}}\label{tab:SmS3}
+  \caption{Storage Overhead of Stage 3: DRAM Command Scheduler \cite{SmS}\label{tab:SmS3}}
 \end{table}
 
 
@@ -305,7 +305,7 @@ For the implementation of HeLM as an LLC cache management policy, several counte
 
 In the case of the hybrid DRAM/PRAM solution, the overhead is represented by a write address list which is implemented as a cache. Based on the emperical information gathered by the researchers, the address list ranges from 1K to 8K entries. Each entry contains a DRAM and a PRAM address, amounting to 79 bits. This means that the area can fluctuate from a minimum of 9KB (approximately 1K*79b) to a maximum of 79KB (= 8K*79b).
 
-Finally, the SMS memory scheduler hardware overhead can be calculated using the formulas given in Figure~\label{tab:SmS1}, Figure~\label{tab:SmS2} and Figure~\label{tab:SmS3}. The data shown in the figures was calculated for 16 CPU cores and 1 GPU core. For comparison, the stimulation will be based on 4 GPUs and 4 CPUs such as one of the configurations of the HeLM solution. By using a rule of three, it can be calculated that 40 entries are needed for the CPU FIFO queues and 80 for the GPU ones. The MPKC counters will have 40 bits, and the last requests row index another 96 bits.
+Finally, the SMS memory scheduler hardware overhead can be calculated using the formulas given in Table~\ref{tab:SmS1}, Table~\ref{tab:SmS2} and Table~\ref{tab:SmS3}. The data shown in the tables was calculated for 16 CPU cores and 1 GPU core. For comparison, the stimulation will be based on 4 GPUs and 4 CPUs such as one of the configurations of the HeLM solution. By using a rule of three, it can be calculated that 40 entries are needed for the CPU FIFO queues and 80 for the GPU ones. The MPKC counters will have 40 bits, and the last requests row index another 96 bits.
 
 For Stage 2, the CPU memory request counters will represent 20 bits, while the GPU ones another 40 bits. Finally for Stage 3, the PerBank FIFO queues will have 120 entries supposing we have the same DRAM memory.
 
