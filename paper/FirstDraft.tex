@@ -241,7 +241,7 @@ Another memory-resource management approach is the Dynamic Quality of Service me
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width = 9 cm]{graphics/QoS-algorithm.png}
+	\includegraphics[width = 9 cm]{graphics/QoS-algorithm.PNG}
 	\caption{Dynamic priority algorithm for QoS \cite{QoS} \label{QoS}}
 \end{figure}
 For implementing the algorithm, a simple policy is used, described in Figure \ref{QoS}. The algorithm evaluates the current progress in the current frame of the GPU and also the expected progress (equations \ref{FrameProgr} and \ref{expProgress} from \cite{QoS}), and, based on these results, the memory controller decides the needed priority levels (pseudo-code in \ref{QoS}).
