@@ -141,9 +141,7 @@ However, having the GPU working only with the PRAM memory can result in missing 
 	\includegraphics[width = 9 cm]{graphics/hot-write.PNG}
 	\caption{Write address list used to keep track of frequency of PRAM memory usage }\label{fig:hotwrite}
 \end{figure} 
-The in-DRAM write buffer should store important and frequently accessed data from the GPU. For this purpose, a hot write data management policy which identifies write-intensive data has been implemented. Therefore, a write address list will be used to store the memory entries (as presented in Figure \ref{fig:hotwrite}), with original addresses residing in the PRAM. The mentioned list is divided in two: a cold and a hot region. Memory addresses are inserted in the list at the beginning of the hot region, and upgraded/downgraded one position if they are used/superseded in use by another memory location (each entry consists of 64 B). If a list item falls in the cold region, it gets evicted from the in-DRAM buffer.
-
-Furthermore, the hot-write buffer removes the issue of cell wear by reducing the number of writes to a single bit (also by implementing the differential writing mechanism \cite{PRAM}), thus expanding the PRAM's lifetime and reliability.
+The in-DRAM write buffer should store important and frequently accessed data from the GPU. For this purpose, a hot write data management policy which identifies write-intensive data has been implemented. Therefore, a write address list will be used to store the memory entries (as presented in Figure \ref{fig:hotwrite}), with original addresses residing in the PRAM. The mentioned list is divided in two: a cold and a hot region. When a new GPU memory address is accessed, it gets inserted in the list at the beginning of the hot region. The entries already in the list are upgraded/downgraded one rank if they are used/superseded in use by another memory location (each entry consists of 64 B). If a list item falls out of the list , it gets evicted from the in-DRAM buffer and written to the PRAM.
 
 Where CPU performance bound is important, the two mechanisms presented in \cite{PRAM} can also be implemented for carefully controlling the impact in CPU IPC: 
 \begin{itemize}
@@ -152,6 +150,8 @@ prioritizing the CPU access to DRAM over the GPU with a FR-FCFS policy.
 	\item
 dynamically adjusting the in-DRAM write-buffer size for keeping the CPU IPC in a specified value range.
 \end{itemize}
+
+Another advantage provided by the hot-write buffer is the possibility of cell wear leveling by reducing the number of writes to a single bit (also by implementing the differential writing mechanism \cite{PRAM}), thus expanding the PRAM's lifetime and reliability.
 
 \subsection{Staged memory scheduling}
 The others in \cite{SmS} propose to solve the request buffer issue with a new memory controller (MC), Staged Memory Scheduling (SMS), that is a simpler implementation in hardware and provides performance and fairness improvements over the application-aware MC. It is split into three stages, the batch formation, batch scheduler and a DRAM command scheduler.
