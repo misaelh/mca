@@ -271,13 +271,15 @@ As can be seen in Figure~\ref{fig:comp}, HeLM offer a considerably higher reduct
 
 Figure~\ref{fig:comp1} shows the weighted average of the speedup for CPU and GPU workloads to obtain the overall speedup of HeLM. The improvement is very noticeable even though it caused a huge amount of misses on the GPU requests. This is because GPU programs are much less sensible to the cache than CPU programs. The speedup was 7.7\%, 10.4\%, and 12.5\% for 1C4G, 2C4G and 4C4G respectively. \cite{LLC}
 
+
+
+Finally, a comparison was made on the hardware overhead of HeLM and three other cache management policies. Figure~\ref{fig:LLChw} shows an explanation of the extra hardware needed for each cache policy and a count of the number of flip-flops needed to implement it. As can be seen, the policy with the least overhead is TAP, however it is not a big difference in comparison to HeLM. On the other hand, the speedup achieved by HeLM is considerably higher than TAP.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width = 8 cm]{graphics/LLChardware.png}
 	\caption{Hardware overhead of different cache management policies \cite{LLC}}\label{fig:LLChw}
 \end{figure}
-
-Finally, a comparison was made on the hardware overhead of HeLM and three other cache management policies. Figure~\ref{fig:LLChw} shows an explanation of the extra hardware needed for each cache policy and a count of the number of flip-flops needed to implement it. As can be seen, the policy with the least overhead is TAP, however it is not a big difference in comparison to HeLM. On the other hand, the speedup achieved by HeLM is considerably higher than TAP.
 
 \subsection{Hybrid memory system}
 Regarding the baseline in \cite{PDRAM}, although the improvements in energy consumption and memory size constraints do matter, a PRAM-only main memory system shows significant slowdowns for a regular SoC. The performance overhead is in average about 40\% making it not suitable for deployment in current computer architecture designs. 
