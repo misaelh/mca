@@ -61,7 +61,7 @@ pdfkeywords={Computer Society, IEEEtran, journal, LaTeX, paper,
 
 \IEEEpeerreviewmaketitle
 \begin{abstract}
-	Something to do about this shitty abstraaaaaaaact. Almost there, come on, Alex Hernandez, change me!!!
+	Due to several factors, CPU-GPU heterogeneous processors are becoming more and more common. Having both types of processing units on the same design is the cause of several issues that engineers are currently trying to solve. One that has a big impact on performance is the memory hierarchy. Both units have very different and conflicting memory needs that generally have the effect of starving the CPU. In this paper we look mainly at three proposed solutions to this problem. We describe them in detail a long with experimental results, and provide an analysis into the pros and cons of each one. A fourth article was also reviewed that adds some more insight.
 \end{abstract}
 \section{Introduction}
 
@@ -361,9 +361,9 @@ The LLC management technique, the staged memory scheduler and the dynamic QoS ar
 	Improved end-user experience by means of enriched GPU rendering quality with minimal impact on CPU performance.
 \end{itemize}
 
-The hybrid memory system comes to complement the two previously mentioned solution in terms of system scaling, i.e. where such a bound constrains performance.
+The hybrid memory system comes to complement the previously mentioned solutions in terms of system scaling, i.e. where such a bound constrains performance.
 
-To be able to compare the three solutions, two cases were analyzed. The first case consists on fields where small area and low power consumption are a priority, such as embedded systems for Internet of Things and similar applications. Given such requirements, simpler and more efficient solutions are preferred over high performance ones.
+To be able to compare the solutions, two cases were analyzed. The first case consists on fields where small area and low power consumption are a priority, such as embedded systems for Internet of Things and similar applications. Given such requirements, simpler and more efficient solutions are preferred over high performance ones.
 
 Of the three papers analyzed, the HeLM cache management policy requires the least hardware overhead, just 166 bits, and thus the least chip and board area increase, while still offering a considerable speedup of at least 7.7\% up to 12.5\% compared to LRU, the simplest other solution. In terms of energy consumption, it could be argued that bypassing the LLC would cause an increase in accesses to the off-chip memory, however much of the bypassing is done whenever the application being run is cache insensitive. In that case most LLC accesses will miss and the main memory will still have to be used anyway. This means that energy-wise, a slight benefit could be seen by not having to go through the LLC.
 
