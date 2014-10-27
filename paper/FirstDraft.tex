@@ -244,7 +244,7 @@ Another memory-resource management approach is the Dynamic Quality of Service me
 	\includegraphics[width = 9 cm]{graphics/QoS-algorithm.png}
 	\caption{Dynamic priority algorithm for QoS \cite{QoS} \label{QoS}}
 \end{figure}
-For implementing the algorithm, a simple policy is used, described in Figure \ref{QoS}. The algorithm evaluates the current progress in the current frame of the GPU and also the expected progress (equations \ref{FrameProgr} and \ref{expProgress} from \cite{QoS}), and, based on these results, the memory controller decides the needed priority levels (pseudo-code in \ref{QoS}).
+For implementing the algorithm, a simple policy is used, described in Figure \ref{QoS}. The algorithm evaluates the current progress in the current frame of the GPU and also the expected progress (equations \ref{FrameProgr} and \ref{expProgress} from \cite{QoS}), and, based on these results, the memory controller decides the needed priority levels.  
 
 \section{Comparisons}
 A more detailed view of the performance improvement of the three separate solutions is presented in the sections below:
@@ -275,7 +275,6 @@ Figure~\ref{fig:comp1} shows the weighted average of the speedup for CPU and GPU
 \end{figure}
 
 Finally, a comparison was made on the hardware overhead of HeLM and three other cache management policies. Figure~\ref{fig:LLChw} shows an explanation of the extra hardware needed for each cache policy and a count of the number of flip-flops needed to implement it. As can be seen, the policy with the least overhead is TAP, however it is not a big difference in comparison to HeLM. On the other hand, the speedup achieved by HeLM is considerably higher than TAP.
-
 
 \subsection{Hybrid memory system}
 Regarding the baseline in \cite{PDRAM}, although the improvements in energy consumption and memory size constraints do matter, a PRAM-only main memory system shows significant slowdowns for a regular SoC. The performance overhead is in average about 40\% making it not suitable for deployment in current computer architecture designs. 
@@ -331,7 +330,15 @@ In systems where GPU performance matters more to the user, e.g gaming, SMS$_0$ p
 \end{figure}
 
 \subsection{Dynamic QoS}
-Using the dynamic QoS with 32 outstanding requests from the GPU, the results of the experiment presented in paper \cite{QoS} show modest degradation in CPU performance with slowdowns ranging from 1.02 to 1.15 comparing with the CPU-only SoC. However, in all the tested benchmarks, the integrated graphics card managed to reduce the number of dropped frames, resulting in an acceptable number of Frames Per Second (30 FPS is considered a minimum acceptable value).
+The presented algorithm was tested against a static (static CPU priority over GPU) QoS policy and an uncontrolled bandwidth. The use of the static QoS policy showed performance degradation ranging from 33 to 50\%, resulting in more dropped frames for the GPU, also with severe impact on the CPU IPC. The reason is that a lower number of requests for the GPU reduces the scheduling efficiency, resulting, in some cases in lower performance than the uncontrolled bandwidth version.
+
+Using the dynamic Quality of Service policy with 32 outstanding requests from the GPU, the results of the experiment presented in paper \cite{QoS} show modest degradation in CPU performance with slowdowns ranging from 1.02 to 1.15 comparing with the CPU-only SoC. However, in all the tested benchmarks, the integrated graphics card managed to reduce the number of dropped frames, resulting in an acceptable number of Frames Per Second (30 FPS is considered a minimum acceptable value). The results can be seen in Figure \ref{QoSFPS}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 9 cm]{graphics/QoSfps.PNG}
+	\caption{GPU performance in frames per second when the CPU is under heavy load (art)\cite{QoS}}\label{QoSFPS}
+\end{figure}
 
 \subsection{Hardware overhead of the proposed solutions}
 For the implementation of HeLM as an LLC cache management policy, several counters and registered are needed. First of all, to identify the cache sensitivity of the GPU application an instruction counter per core is needed (20 bits x 4), as well as some core IDs (10-bit x 4). To count and compare the CPU cache misses with each of the two thresholds, two new counters are also needed (20-bit x 2). Finally, a register is used to hold the LLC bypass threshold selected by the management policy (6 bits). In total, this solution inserts an overhead of 166 bits.
@@ -339,7 +346,6 @@ For the implementation of HeLM as an LLC cache management policy, several counte
 In the case of the hybrid DRAM/PRAM solution, the overhead is represented by a write address list which is implemented as a cache. Based on the empirical information gathered by the researchers, the address list ranges from 1K to 8K entries. Each entry contains a DRAM and a PRAM address, amounting to 79 bits. This means that the area can fluctuate from a minimum of 9KB (approximately 1K*79b) to a maximum of 79KB (= 8K*79b) - last one chosen as the best of option with fairly good improvements in GPU performance.
 
 Finally, the SMS memory scheduler hardware overhead can be calculated using the formulas given in Table~\ref{tab:SmS1}, Table~\ref{tab:SmS2} and Table~\ref{tab:SmS3}. The data shown in the tables was calculated for 16 CPU cores and 1 GPU with 20 cores. For comparison, the analysis will be based on 1 GPU with 4 cores and 4 CPUs such as one of the configurations of the HeLM solution. For the GPU calculations, the result will be the same, as the resources are needed for the whole GPU independent of cores. So for example we would still need the same 20 entries for the GPU FIFO queues. For the CPU we can use a rule of three and it can be calculated that 40 entries are needed for the CPU FIFO queues. because they are required for the whole GPU not per core. The MPKC counters will have 40 bits, and the last requests row index another 60 bits. For Stage 2, the CPU memory request counters will represent 20 bits, while the GPU ones another 10 bits. Finally for Stage 3, the PerBank FIFO queues will have 120 entries supposing we have the same DRAM memory. In total this solution would require 130 bit counters and 3 queues with 40, 20 and 120 entries.
-
 
 \section{Analysis}
 The issues that have arose with the integration of GPU on the same die with the CPU need tackling on different fronts in order to take benefit of the increase in raw computing power that a heterogeneous SoC exhibits. 
