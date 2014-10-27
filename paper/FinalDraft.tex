@@ -75,7 +75,7 @@ The main part of a conventional computing system architecture is comprised of a 
 
 As of 2009, for means of tighter integration and power consumption, consumer CPUs have started to engulf some GPU processing cores. The solution brought many innovations in the field, but also gave birth to several challenges to computer engineers and software architects. 
 
-The biggest problems of such a high-level of integration are the memory management, bandwidth and latency. The issue grows further in complexity because the memory requirements do not scale in a linear manner, but more agressively due to the combined needs the two processors exhibit (the GPU and CPU); while the conventional main-purpose processor needs low-latency memory and moderate bandwidth, the GPU is not affected by a high latency, while the bandwidth requirements can be an order of magnitude bigger.
+The biggest problems of such a high-level of integration are the memory management, bandwidth and latency. The issue grows further in complexity because the memory requirements do not scale in a linear manner, but more aggressively due to the combined needs the two processors exhibit (the GPU and CPU); while the conventional main-purpose processor needs low-latency memory and moderate bandwidth, the GPU is not affected by a high latency, while the bandwidth requirements can be an order of magnitude bigger.
 
 One of the issues related to memory management in CPU-GPU solutions that is currently most affecting performance is the memory bandwidth. With CPU only solutions, this was already a problem. Engineers in charge of improving DRAM technology, which is used as main memory for many processors, have had to come up with ingenious solutions to the bandwidth issue. Sometimes increasing the burst length, other times rearranging the banks, memory technology has consistently been the weakest link. CPU-GPU processors now represent a new challenge: sharing the limited memory bandwidth with some bandwidth-hungry processing units.
 
@@ -108,9 +108,9 @@ Strictly speaking, a device's main memory needs to have greater capacity in smal
 The proposed solution is a new cache management policy called HeLM (Heterogeneous LLC Management). It consists on measuring the cache sensitivity of the GPU and CPU, and based on a couple of thresholds decide if GPU access requests to the LLC should be bypassed directly to the main memory or not.
 It is based on the fact that GPUs have a much higher TLP than CPUs, and thus are less affected by longer memory access latency. Having a high TLP means that there will most likely be some threads that can be ran while waiting for the memory to respond. If that is the case, bypassing the cache should not affect the IPC count.
 
-To calculate cache sensitivity in the GPUs, set dueling is used. The GPUs TLP is measured as the amount of wavefronts ready to be scheduled. This information is sent along with the LLC access request whenever there is an L1 cache miss. One GPU core is set to do a cache bypass whenever it's TLP is higher than a lowThreshold. Another one is set to do the same but with highThreshold. IPC is measured for both cores and if the difference is higher than pThreshold, the highThreshold is used for the remaining cores.
+To calculate cache sensitivity in the GPUs, set dueling is used. The GPUs TLP is measured as the amount of wavefronts ready to be scheduled. This information is sent along with the LLC access request whenever there is an L1 cache miss. One GPU core is set to do a cache bypass whenever it's TLP is higher than a low Threshold Another one is set to do the same but with high Threshold IPC is measured for both cores and if the difference is higher than p Threshold, the high Threshold is used for the remaining cores.
 
-In the case of the CPUs, the cache misses on the LLC are measured with both lowThreshold and highThreshold bypassing of the GPUs. If the difference in cache misses is higher than mThreshold, the threshold of the GPUs is overridden to be the lowThreshold.
+In the case of the CPUs, the cache misses on the LLC are measured with both low Threshold and high Threshold bypassing of the GPUs. If the difference in cache misses is higher than m Threshold, the threshold of the GPUs is overridden to be the low Threshold.
 
 \begin{figure}[H]
 	\centering
@@ -118,7 +118,7 @@ In the case of the CPUs, the cache misses on the LLC are measured with both lowT
 	\caption{Algorithm followed to select the proper bypass threshold\cite{LLC}}\label{fig:algo}
 \end{figure} 
 
-What all this means is that the CPU will be given preference over the GPU in cache allocation. The GPU will be frequently bypassing the LLC cache, specially if its TLP is high. So a penalty in the GPUs IPC is expected. However the CPU IPC is expected to see the most change, since the GPU bypassing of the LLC means the CPU will get more sets for its use. Figure~\ref{fig:algo} shows the algorithm being followed to determine the threshold used for LLC bypassing. The first comparison determines if there are too many cache misses for the CPU requests and if so sets the threshold to lowThreshold. This is how priority is given to the CPU requests.
+What all this means is that the CPU will be given preference over the GPU in cache allocation. The GPU will be frequently bypassing the LLC cache, specially if its TLP is high. So a penalty in the GPUs IPC is expected. However the CPU IPC is expected to see the most change, since the GPU bypassing of the LLC means the CPU will get more sets for its use. Figure~\ref{fig:algo} shows the algorithm being followed to determine the threshold used for LLC bypassing. The first comparison determines if there are too many cache misses for the CPU requests and if so sets the threshold to low Threshold This is how priority is given to the CPU requests.
 
 
 
@@ -191,7 +191,7 @@ Batch Formation:  The hardware implementation for stage 1 can be of a fairly sim
   \resizebox{14.3 cm}{!}{\begin{minipage}{\textwidth}
 	\begin{tabular}{| l | l |}
 		\hline
-		Storgae & Size \\ \hline
+		Storage & Size \\ \hline
 		CPU FIFO queues 			& $N_{core} × Queue\_Size_{core} = 160 entries$ 					\\\hline
 		GPU FIFO queues 			& $N_{GPU} × Queue\_Size_{GPU} = 20 entries$ 						\\\hline
 		MPKC counters   			& $N_{core} × log_2 MPKC_{max} = 160 bits$							\\\hline
@@ -209,7 +209,7 @@ Batch Scheduler:  The batch scheduler does not need to be very complex as it onl
   \resizebox{15.5 cm}{!}{\begin{minipage}{\textwidth}
 	\begin{tabular}{| l | l |}
 		\hline
-		Storgae & Size \\ \hline
+		Storage & Size \\ \hline
 		CPU memory request counters 			& $N_{core} × log_2 Count_{max\_CPU} = 80 bits$ 					\\\hline
 		GPU memory request counter 			& $N_{GPU} × log_2 Count_{max\_GPU} = 10 bits$ 						\\\hline	
 	\end{tabular}
@@ -224,7 +224,7 @@ DRAM Command Scheduler:   Compared to the monolithic scheduler the DRAM command 
   \resizebox{17 cm}{!}{\begin{minipage}{\textwidth}
 	\begin{tabular}{| l | l |}
 		\hline
-		Storgae & Size \\ \hline
+		Storage & Size \\ \hline
 		Per-Bank FIFO queues			& $N_{banks} × Queue\_Size_{bank} = 120 entries$ 					\\\hline
 	\end{tabular}
   \end{minipage} }
@@ -295,7 +295,7 @@ The SMS is compared to three state-of-the-art memory scheduler configurations: F
 
 For evaluation of the system a set of 105 multi programmed workloads are used each consisting of sixteen SPEC CPU 2006 benchmarks and one GPU application.  
 
-To compare the performance of the different schedulers CPU-GPU Weighted Speedup (CGWS) metric (Eqn \ref{eq:CGWS})  is used.
+To compare the performance of the different schedulers CPU-GPU Weighted Speedup (CGWS) metric (Equation \ref{eq:CGWS})  is used.
 
 \begin{equation}
 CGWS = CPU_{WS} + GPU_{weight}*GPU_{speedup} \label{eq:CGWS}
@@ -385,7 +385,7 @@ In this paper, two different approaches have been studied for the evaluation of 
 
 Because of the challenges faced when combining two different execution units (the CPU and the integrated GPU - GPU) on the same die, the focus has to be shifted to multiple aspects and critical points, such as bandwidth, latency, capacity, reliability and energy consumption. Therefore, it is not enough to balance the load between the two processors, but to dynamically prioritize memory access \cite{LLC} and bandwidth allocation in order to adapt to different types of applications and to improve the overall user experience. 
 
-Aside from application-aware memory allocation, the attention needs to be drawn also to the efficient management of the on-chip request buffer in order to allow a appropiate ratio of instruction fetch for both compute cores, without a significant degradation in performance for neither of them. The  staged memory scheduler proves a good solution for the presented issue without a considerable impact on die area, costs or complexity.  It shows to improve performance and fairness compared to state-of-the-art memory schedulers and is significantly easer to implement\cite{SmS}.
+Aside from application-aware memory allocation, the attention needs to be drawn also to the efficient management of the on-chip request buffer in order to allow a appropriate ratio of instruction fetch for both compute cores, without a significant degradation in performance for neither of them. The  staged memory scheduler proves a good solution for the presented issue without a considerable impact on die area, costs or complexity.  It shows to improve performance and fairness compared to state-of-the-art memory schedulers and is significantly easer to implement\cite{SmS}.
 
 Regarding the area and energy consumption constraints, the hybrid main-memory organization presented in \cite{PRAM} and \cite{PDRAM} can help extend the roadmap of the current computer architectures, facilitating the integration in low-power devices. The synergy of the two technologies, combined with the dynamic hot-write buffer and management unit have a very small impact on CPU performance, greatly improving GPU IPC. Therefore, as stated in \cite{PRAM}, the increase in GPU computer power can be leveraged to build more powerful SoCs and make more high-performance compact devices.
 
