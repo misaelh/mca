@@ -218,6 +218,16 @@ DRAM Command Scheduler:   Compared to the monolithic scheduler the DRAM command 
 
 
 \section{Comparisons}
+The issues that have arose with the integration of GPU on the same die with the CPU need tackling on different fronts in order to take benefit of the increase in raw computing power that a heterogeneous SoC exhibits. 
+The LLC management technique and the staged memory scheduler are sequential improvements that can be made to a SoC without changing the overall system architecture. Therefore, both of the solutions can be integrated in the design of current processing systems. The outcome of the integration can show improvements on two important steps in the data access blocks:
+\begin{itemize}
+	\item
+increase in the LLC cache hit ratio for the GPU
+	\item
+better instruction fetch by reorganizing the conventional request buffer 
+\end{itemize}
+The hybrid memory system comes to complement the two previously mentioned solution in terms of system scaling. A more detailed view of the performance improvement of the three separate solutions is presented in the sections below:
+
 \subsection{Cache management in shared LLC}
 A comparison to other cache management policies was made with 3 different configurations: 1, 2 and 4 CPU cores, each with 4 GPU cores (properly named 1C4G, 2C4G and 4C4G respectively). A different random benchmark on each CPU core was run, and the same random benchmark for all 4 GPUs. For each configuration, the benchmark was changed 100, 40 and 30 times respectively. The reduction of cache misses and speedup was calculated relative to LRU results. Figure~\ref{fig:comp} shows the comparison.
 
