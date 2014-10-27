@@ -352,6 +352,16 @@ The LLC management technique and the staged memory scheduler are sequential impr
 \end{itemize}
 The hybrid memory system comes to complement the two previously mentioned solution in terms of system scaling. 
 
+To be able to compare the three solutions, two cases were analyzed. The first case consists on fields where small area and low power consumption are a priority, such as embedded systems for Internet of Things and similar applications. Given such requirements, simpler and more efficient solutions are preferred over high performance ones.
+
+Of the three papers analyzed, the HeLM cache management policy requires the least hardware overhead, just 166 bits, and thus the least chip and board area increase, while still offering a considerable speedup of at least 7.7\% up to 12.5\% compared to LRU, the simplest other solution. In terms of energy consumption, it could be argued that bypassing the LLC would cause an increase in accesses to the off-chip memory, however much of the bypassing is done whenever the application being run is cache insensitive. In that case most LLC accesses will miss and the main memory will still have to be used anyway. This means that energy-wise, a slight benefit could be seen by not having to go through the LLC.
+
+On the other hand, the PRAM solution would require the addition of another memory module to the board which means bigger form factor and higher costs. Not just that, but the need for having an extra cache on-chip, with a more considerable size of 79 kilobytes, means that this is the most cumbersome proposal. However, PRAM is a non-volatile memory, meaning that it can be completely turned off with zero power consumption for the highest sleep modes. This is a very powerful and useful ability for very low consumption systems.
+
+The memory scheduler solution can be considered a middle point between the two previous onces. Its speedup is at least 6.4\% but can be as much as 25.7\% compared to other state-of-the-art alternatives. Its overhead is mostly on on-chip area, and consists of 130 bits and 3 different queues of 40, 20 and 120 entries. Compared to HeLM, the difference in overhead is big, but still with a smaller footprint than PRAM.
+
+The second case that was analyzed consisted on having the best performance regardless of other factors, like area and power consumption. In this case, the memory scheduling solution would be the most appropriate since its speedup is the biggest of the three. The HelM cache management policy could also be a good offer, but it doesn't perform as good and it wouldn't be advisable to have both of them since they mostly overlap and the improvement could be negligible. PRAM would simply not be a good solution since it offers a worse performance than just using DRAM. However it would be very desirable in systems with a big need for reduced power consumption and a big amount of main memory.
+
 \section{Conclusion}
 Recent developments in the field of main memory shows a broad in horizons, as researchers try to evaluate several different paths and approaches towards paving the way for another decade of sustained scaling. 
 
