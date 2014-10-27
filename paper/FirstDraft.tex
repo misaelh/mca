@@ -1,5 +1,5 @@
 
-\documentclass[12pt,journal,compsoc]{IEEEtran}
+\documentclass[10pt,journal,compsoc]{IEEEtran}
 \ifCLASSOPTIONcompsoc
   % IEEE Computer Society needs nocompress option
   % requires cite.sty v4.0 or later (November 2003)
@@ -19,6 +19,7 @@
 
 \ifCLASSINFOpdf
   \usepackage[pdftex]{graphicx}
+  \PassOptionsToPackage{monochrome}{xcolor}
 
 \else
 
@@ -61,7 +62,7 @@ pdfkeywords={Computer Society, IEEEtran, journal, LaTeX, paper,
 
 \IEEEpeerreviewmaketitle
 \begin{abstract}
-	Miniaturization and the fast pace of technological evolution provide a solid base for building high-performance computers into smaller and portable devices. As almost every new shrink in manufacturing node allows a new functional block from the computer's architecture to be included on the same die with the CPU, the graphics processing unit has also been engulfed in the System on Chip. Therefore, this paper is a state-of-the-art review of some innovation proposals suited for keeping the memory barrier under control. In our research, we reviewed and thoroughly analyzed a number of three main solutions which tackle different memory-related weak points of a heterogeneous SoC. A fourth article (Dynamic QoS) has been qualitatively reviewed for addressing the improvement in the user-experience feature of a computing device.
+	\bf{Miniaturization and the fast pace of technological evolution provide a solid base for building high-performance computers into smaller and portable devices. As almost every new shrink in manufacturing node allows a new functional block from the computer's architecture to be included on the same die with the CPU, the graphics processing unit has also been engulfed in the System on Chip. Therefore, this paper is a review of state-of-the-art innovation proposals suited for keeping the memory barrier under control. In our research, we reviewed and thoroughly analyzed a number of three main solutions which tackle different memory-related weak points of a heterogeneous SoC. A fourth article (Dynamic QoS) has been qualitatively reviewed for addressing the improvement in the user-experience feature of a computing device.}
 \end{abstract}
 \section{Introduction}
 
