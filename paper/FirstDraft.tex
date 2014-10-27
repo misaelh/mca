@@ -60,9 +60,9 @@ pdfkeywords={Computer Society, IEEEtran, journal, LaTeX, paper,
 
 \indent Recent developments start to show a modest but solid deviation to the well-known Gordon Moore's 40-year old law that talks about performance improvement in CPU processing power. Even though the mentioned law got several interpretations, only one seems to be able to keep up with the projected trend: the increase in number of transistor per die area (expected to double every 18-24 months). However, as we approach the limits of current Silicon manufacturing technologies, even that trend is threatened to flatten, not only because of the pure physical constraints (we are reaching manufacturing precisions of atoms), but also because of the more significant quantum phenomena that starts to be exhibited when talking about devices like SET (single-electron transistors).
 
-One of the most important aspects left aside in the childhood of computing ages was the memory-barrier, probably the biggest constraint a computing system faces nowadays. There is a well known chart that addresses this issue, which shows that the memory - CPU gap also grows at an exponential rate. In other terms, this issue has a massive impact in CPU performance and further threatens to clutter the horizon of exponential innovation for the field of artificial intelligence and computing systems.
+One of the most important aspects left aside in the childhood of computing ages was the memory-barrier, probably the biggest constraint a computing system faces nowadays. There is a well known chart that addresses this issue, which shows that the memory-CPU gap also grows at an exponential rate. In other terms, this issue has a massive impact in CPU performance and further threatens to clutter the horizon of exponential innovation for the field of artificial intelligence and computing systems.
 
-The complexity of the issue grows further with recent developments with heterogeneous SoC, because of integrating a bandwidth-hungry multi-core GPU on the same die. Although a higher level of integration can provide improvements in many areas, such as portability, power-efficiency and cost-efficiency, the bandwidth and latency challenges still remain and can truly bottleneck one of the two main components, regarding the provided scenario.
+The complexity of the issue grows further with recent developments on heterogeneous SoC, because of integrating a bandwidth-hungry multi-core GPU on the same die. Although a higher level of integration can provide improvements in many areas, such as portability, power-efficiency and cost-efficiency, the bandwidth and latency challenges still remain and can truly bottleneck one of the two main components, regarding the provided scenario.
 
 \section{Problems}
 The main part of a conventional computing system architecture is comprised of a computing unit, it's physical memory, virtual memory and the data transfer buses between all of them. In order to keep up with the evolving state of processing power, memory hierarchy started to become more complex. Nowadays, SoCs include up to three levels of Cache memory, built as SRAM memory. The cache is tightly coupled with the compute units and is usually structured in two or three levels (L1, L2 and L3). The lowest level is the closest to the cores and thus should have the lowest latency possible. However the next levels which are less latency dependent can be shared between cores as a way to reduce hardware overhead. The term LLC refers to the last level cache, which in modern architectures it is commonly shared amongst all of the cores.
@@ -77,7 +77,7 @@ GPUs support a considerably larger amount of threads. Coupled with the fact that
 
 State of the art memory controllers (MC) have mainly been focused on a multi-core CPUs and not on the joint venture of CPU-GPU SoCs.  To make the applications-aware memory scheduling work on GPU-CPU SoC a very large request buffer is needed.
  
-Figure~\ref{fig:buff}(a) shows the request buffer of a memory controller where there is only a multi-core CPU.  The MC has a good overview over numerous requests from the CPU cores and inside into their memory behavior.  When the buffer is shared between the GPU and CPU, as can be seen in Figure~\ref{fig:buff}(b) the requests from the GPU limit the MC capability of insight into the behavior of requests from the CPU cores.  Figure~\ref{fig:buff}(c) shows larger request buffer so that the MC can observer more requests from the CPU.
+Figure~\ref{fig:buff}(a) shows the request buffer of a memory controller where there is only a multi-core CPU.  The MC has a good overview over numerous requests from the CPU cores and inside into their memory behavior.  When the buffer is shared between the GPU and CPU, as can be seen in Figure~\ref{fig:buff}(b) the requests from the GPU limit the MC capability of insight into the behavior of requests from the CPU cores.  Figure~\ref{fig:buff}(c) shows larger request buffer so that the MC can observer more requests from the CPU\cite{SmS}.
 
 \begin{figure}[H]
 	\centering
@@ -112,7 +112,7 @@ What all this means is that the CPU will be given preference over the GPU in cac
 \begin{figure}
 	\centering
 	\includegraphics[width = 6 cm]{graphics/LLCalgo.png}
-	\caption{Algorithm followed to select the proper bypass threshold}\label{fig:algo}
+	\caption{Algorithm followed to select the proper bypass threshold\cite{LLC}}\label{fig:algo}
 \end{figure} 
 
 \subsection{Hybrid-technology memory system}
@@ -124,7 +124,7 @@ Combining the benefits of the two technologies, the authors proposed two types o
 	\includegraphics[width = 8 cm]{graphics/structure-hybrid.png}
 	\caption{(a) Flat structure (b) Hierarchical structure}\label{fig:structure}
 \end{figure} 
-First variant is a hierarchical memory organization, where the DRAM plays the role of a Last-Level Cache and the PRAM is the main memory. However, when regarding the CPU’s needs, a LLC miss would involve a bigger latency (98 ns for the PRAM against 45 ns for DRAM) for fetching the needed data from the main memory. Moreover, while the write-through policy would be impossible to apply (very high write cycle of PRAM - around 40 us), the write-back would also stall the CPU when data bursts are sent to the LLC and fill it up. Therefore, without a significant amount of memory size for the LLC, the hierarchical organization of the hybrid memory system can significantly decrease the IPC (for a 1 GHz CPU a wait on writing to the main memory would take approximatively 40.000 cycles).
+First variant is a hierarchical memory organization, where the DRAM plays the role of a Last-Level Cache and the PRAM is the main memory. However, when regarding the CPU’s needs, a LLC miss would involve a bigger latency (98 ns for the PRAM against 45 ns for DRAM) for fetching the needed data from the main memory. Moreover, while the write-through policy would be impossible to apply (very high write cycle of PRAM - around 40 $\mu s$), the write-back would also stall the CPU when data bursts are sent to the LLC and fill it up. Therefore, without a significant amount of memory size for the LLC, the hierarchical organization of the hybrid memory system can significantly decrease the IPC (for a 1 GHz CPU a wait on writing to the main memory would take approximatively 40.000 cycles).
 
 The second approach is a flat organization of the two technologies, with the DRAM mainly serving the CPU purposes, and the PRAM meant for the GPU side. This kind of implementation has several advantages over the hierarchical:
 \begin{itemize}
@@ -147,29 +147,29 @@ The in-DRAM write buffer should store important and frequently accessed data fro
 Furthermore, the hot-write buffer removes the issue of cell wear by reducing the number of writes to a single bit (also by implementing the differential writing mechanism \cite{PRAM}), thus expanding the PRAM's lifetime and reliability.
 
 \subsection{Staged memory scheduling}
-A proposal to solve the request buffer issue is a new memory controller (MC), Staged Memory Scheduling (SMS), that is a simpler implementation in hardware and provides performance and fairness improvements over the application-aware MC. It is split into three stages, the batch formation, batch scheduler and a DRAM command scheduler.
+The others in \cite{SmS} propose to solve the request buffer issue with a new memory controller (MC), Staged Memory Scheduling (SMS), that is a simpler implementation in hardware and provides performance and fairness improvements over the application-aware MC. It is split into three stages, the batch formation, batch scheduler and a DRAM command scheduler.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width = 8 cm]{graphics/SmS.png}
-	\caption{organization of the SMS \cite{SmS}}
+	\caption{Organization of the SMS \cite{SmS}}
 \end{figure}
 
 The batch formation is focused on row-buffer locality.  It groups together requests from applications that want to access the same row in the main memory. The second stage, the batch scheduler, schedules batches from different applications and the third stage, the DRAM Command Scheduler schedules requests while satisfying all DRAM constrains \cite{SmS}
 
 Stage 1: Is built from simple FIFO structures that have one structure per sources.  One source is a single CPU-core or the GPU.  One batch is one or more memory requests from the same source that request access to the same DRAM row.  A batch is only ready when a request to a new DRAM row comes in, it is full or when the oldest request in the batch has exceeded a predefined age threshold.  A batch that is considered ready moves to stage 2 the Batch scheduler.
 
-Stage 2:  The Batch Scheduler operates in two states, the pick  and the  drain.  In the pick state in picks a batch from stage 1 and than enters drain state where it feeds the FIFO batch to DRAM Command Scheduler one request per clock cycle until the whole batch is gone.  The picking is done in one of two fashions.  It picks the batch using either round-robin policy or shortest job first (SJF).   SJF tends to favor latency-sensitive applications that tend to have fewer total requests and thus favoring the CPU over the GPU.  On the other hand the round-robin simply picks the next ready batch in a round-robin manner and thus servicing high memory-intensive applications and favoring the GPU over the CPU.  The batch scheduler uses SJF with a probability of $p$ and round-robin  $ 1 - p $ which will be explained better later.
+Stage 2:  The Batch Scheduler operates in two states, the pick  and the  drain.  In the pick state in picks a batch from stage 1 and than enters drain state where it feeds the FIFO batch to the DRAM Command Scheduler one request per clock cycle until the whole batch is gone.  The picking is done in one of two fashions.  It picks the batch using either round-robin policy or shortest job first (SJF).   SJF tends to favor latency-sensitive applications that tend to have fewer total requests and thus favoring the CPU over the GPU.  On the other hand the round-robin simply picks the next ready batch in a round-robin manner and thus servicing high memory-intensive applications and favoring the GPU over the CPU.  The batch scheduler uses SJF with a probability of $p$ and round-robin  $ 1 - p $ which will be explained better later.
 
 Stage 3: DRAM Command Scheduler (DCS) consists of few FIFO queues or one per DRAM bank.  Since the row-buffer locality from stage 1 has been preserved the only job of the DCS is to issue low-level DRAM commands and ensuring DRAM protocol compliance. 
 
 Some batches bypass stage 1 and 2 and go directly to the DCS. Latency-sensitive requests of applications with low memory-intensity and all requests wen the system is lightly loaded, that is when total number of in-flight requests over all sources in the DCS are fewer the 16.\\
 
 The probability parameter $p$:  As stated above the probability of SJF used is $p$ and that of round-robin policy $1-p$.  Therefor the value of $p$ determines  which gets higher priority, the CPU or the
-GPU.  That is when $p$ is high the SJF policy is performed more frequently then round-robin and therefore favoring less memory-intensive applications of the CPU over the GPU.  And on the other hand when p is low request batches are scheduled more often in round-robin fashion favoring memory-intensive applications of the GPU over the CPU.  As different systems have different performance needs it is proposed to have $p$ a dynamic parameter that can be tuned to the needs of different systems.\\
+GPU.  That is when $p$ is high the SJF policy is performed more frequently then round-robin and therefore favoring less memory-intensive applications of the CPU over the GPU.  And on the other hand when p is low request batches are scheduled more often in round-robin fashion favoring memory-intensive applications of the GPU over the CPU.  As different systems have different performance needs it is proposed to have $p$ a dynamic parameter that can be tuned to the needs of different systems\cite{SmS}.\\
 
-\textbf{Hardware Implementation}
-Batch Formation:  The hardware implementation for stage can be of a fairly simple nature as it only needs one comparator per source.  A new request has only to be checked if it can fit in the existing batch or not.  That is if the incoming request row index is the same as the last request that entered the batch.  The hardware overhead can be seen in Table \ref{tab:SmS1}
+\textbf{Hardware Implementation}\\
+Batch Formation:  The hardware implementation for stage 1 can be of a fairly simple nature as it only needs one comparator per source.  A new request has only to be checked if it can fit in the existing batch or not.  That is if the incoming request row index is the same as the last request that entered the batch.  The hardware overhead can be seen in Table \ref{tab:SmS1}
 
 \begin{table}[H]
   \centering
@@ -202,7 +202,7 @@ Batch Scheduler:  The batch scheduler does not need to be very complex as it onl
   \caption{Storage Overhead of Stage 2: Batch Schedule \cite{SmS}}\label{tab:SmS2}
 \end{table}
 
-DRAM Command Scheduler:   Compared to the monolithic scheduler the DRAM command scheduler is on completely different scale.  It consist of per-bank FIFOs, eight per rank for DDR3, and only needs to look at the head of one. The hardware overhead can be seen in Table \ref{tab:SmS3}
+DRAM Command Scheduler:   Compared to the monolithic scheduler the DRAM command scheduler is on a completely different scale.  It consist of per-bank FIFOs, eight per rank for DDR3, and only needs to look at the head of one. The hardware overhead can be seen in Table \ref{tab:SmS3}
 
 \begin{table}[H]
   \centering
@@ -310,15 +310,15 @@ Finally, the SMS memory scheduler hardware overhead can be calculated using the 
 For Stage 2, the CPU memory request counters will represent 20 bits, while the GPU ones another 40 bits. Finally for Stage 3, the PerBank FIFO queues will have 120 entries supposing we have the same DRAM memory.
 
 \section{Conclusion}
-Recent developments in the field of main memory shows a broad in horizons, as researchers try to evaluate several different paths and approaches towards for paving the way for another decade of sustained scaling. 
+Recent developments in the field of main memory shows a broad in horizons, as researchers try to evaluate several different paths and approaches towards paving the way for another decade of sustained scaling. 
 
 In this paper, two different approaches have been studied for the evaluation of memory systems roadmap: technology-aware improvements (the combination of two technologies that complement each other)  and application-aware solutions (better management of memory resources). 
 
-Because of the challenges faced when combining two different execution units (the CPU and the integrated GPU - iGPU) on the same die, the focus has to be shifted to multiple aspects and critical points, such as bandwidth, latency, capacity, reliability and energy consumption. Therefore, it is not enough to balance the load between the two processors, but to dynamically prioritize memory access \cite{LLC} and bandwidth allocation in order to adapt to different types of applications and to improve the overall user experience. 
+Because of the challenges faced when combining two different execution units (the CPU and the integrated GPU - GPU) on the same die, the focus has to be shifted to multiple aspects and critical points, such as bandwidth, latency, capacity, reliability and energy consumption. Therefore, it is not enough to balance the load between the two processors, but to dynamically prioritize memory access \cite{LLC} and bandwidth allocation in order to adapt to different types of applications and to improve the overall user experience. 
 
 Aside from application-aware memory allocation, the attention needs to be drawn also to the efficient management of the on-chip request buffer in order to allow a appropiate ratio of instruction fetch for both compute cores, without a significant degradation in performance for neither of them. The  staged memory scheduler proves a good solution for the presented issue without a considerable impact on die area, costs or complexity.  It shows to improve performance and fairness compared to state-of-the-art memory schedulers and is significantly easer to implement\cite{SmS}.
 
-Regarding the area and energy consumption constraints, the hybrid main-memory organization presented in \cite{PRAM} and \cite{PDRAM} can help extend the roadmap of the current computer architectures, facilitating the integration in low-power devices. The sinergy of the two technologies, combined with the dynamic hot-write buffer and management unit have a very small impact on CPU performance, greatly improving GPU IPC. Therefore, as stated in \cite{PRAM}, the increase in GPU computer power can be leveraged to build more powerful SoCs and make more high-performance compact devices.
+Regarding the area and energy consumption constraints, the hybrid main-memory organization presented in \cite{PRAM} and \cite{PDRAM} can help extend the roadmap of the current computer architectures, facilitating the integration in low-power devices. The synergy of the two technologies, combined with the dynamic hot-write buffer and management unit have a very small impact on CPU performance, greatly improving GPU IPC. Therefore, as stated in \cite{PRAM}, the increase in GPU computer power can be leveraged to build more powerful SoCs and make more high-performance compact devices.
 
 \section{Perspectives}
 Write here perspectives (maybe of our own ideas). 
