@@ -102,7 +102,6 @@ Strictly speaking, a device's main memory needs to have greater capacity in smal
 The proposed solution is a new cache management policy called HeLM (Heterogeneous LLC Management). It consists on measuring the cache sensitivity of the GPU and CPU, and based on a couple of thresholds decide if GPU access requests to the LLC should be bypassed directly to the main memory or not.
 It is based on the fact that GPUs have a much higher TLP than CPUs, and thus are less affected by longer memory access latency. Having a high TLP means that there will most likely be some threads that can be ran while waiting for the memory to respond. If that is the case, bypassing the cache should not affect the IPC count.
 
-
 To calculate cache sensitivity in the GPUs, set dueling is used. The GPUs TLP is measured as the amount of wavefronts ready to be scheduled. This information is sent along with the LLC access request whenever there is an L1 cache miss. One GPU core is set to do a cache bypass whenever it's TLP is higher than a lowThreshold. Another one is set to do the same but with highThreshold. IPC is measured for both cores and if the difference is higher than pThreshold, the highThreshold is used for the remaining cores.
 
 In the case of the CPUs, the cache misses on the LLC are measured with both lowThreshold and highThreshold bypassing of the GPUs. If the difference in cache misses is higher than mThreshold, the threshold of the GPUs is overridden to be the lowThreshold.
@@ -145,6 +144,14 @@ However, having the GPU working only with the PRAM memory can result in missing 
 The in-DRAM write buffer should store important and frequently accessed data from the GPU. For this purpose, a hot write data management policy which identifies write-intensive data has been implemented. Therefore, a write address list will be used to store the memory entries (as presented in Figure \ref{fig:hotwrite}), with original addresses residing in the PRAM. The mentioned list is divided in two: a cold and a hot region. Memory addresses are inserted in the list at the beginning of the hot region, and upgraded/downgraded one position if they are used/superseded in use by another memory location (each entry consists of 64 B). If a list item falls in the cold region, it gets evicted from the in-DRAM buffer.
 
 Furthermore, the hot-write buffer removes the issue of cell wear by reducing the number of writes to a single bit (also by implementing the differential writing mechanism \cite{PRAM}), thus expanding the PRAM's lifetime and reliability.
+
+Where CPU performance bound is important, the two mechanisms presented in \cite{PRAM} can also be implemented for carefully controlling the impact in CPU IPC: 
+\begin{itemize}
+	\item
+prioritizing the CPU access to DRAM over the GPU with a FR-FCFS policy.
+	\item
+dynamically adjusting the in-DRAM write-buffer size for keeping the CPU IPC in a specified value range.
+\end{itemize}
 
 \subsection{Staged memory scheduling}
 The others in \cite{SmS} propose to solve the request buffer issue with a new memory controller (MC), Staged Memory Scheduling (SMS), that is a simpler implementation in hardware and provides performance and fairness improvements over the application-aware MC. It is split into three stages, the batch formation, batch scheduler and a DRAM command scheduler.
