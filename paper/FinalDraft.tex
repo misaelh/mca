@@ -76,13 +76,13 @@ The main part of a conventional computing system architecture is comprised of a 
 
 As of 2009, for means of tighter integration and power consumption, consumer CPUs have started to engulf some GPU processing cores. The solution brought many innovations in the field, but also gave birth to several challenges to computer engineers and software architects. 
 
-The biggest problems of such a high-level of integration are the memory management, bandwidth and latency. The issue grows further in complexity because the memory requirements do not scale in a linear manner, but more agressively due to the combined needs the two processors exhibit (the GPU and CPU); while the conventional main-purpose processor needs low-latency memory and moderate bandwidth, the GPU is not affected by a high latency, while the bandwidth requirements can be an order of magnitude bigger.
+The biggest problems of such a high-level of integration are the memory management, bandwidth and latency. The issue grows further in complexity because the memory requirements do not scale in a linear manner, but more aggressively due to the combined needs the two processors exhibit (the GPU and CPU); while the conventional main-purpose processor needs low-latency memory and moderate bandwidth, the GPU is not affected by a high latency, while the bandwidth requirements can be an order of magnitude bigger.
 
 One of the issues related to memory management in CPU-GPU solutions that is currently most affecting performance is the memory bandwidth. With CPU only solutions, this was already a problem. Engineers in charge of improving DRAM technology, which is used as main memory for many processors, have had to come up with ingenious solutions to the bandwidth issue. Sometimes increasing the burst length, other times rearranging the banks, memory technology has consistently been the weakest link. CPU-GPU processors now represent a new challenge: sharing the limited memory bandwidth with some bandwidth-hungry processing units.
 
 GPUs support a considerably larger amount of threads. Coupled with the fact that many GPU applications are cache insensitive, meaning that there is almost zero reuse of cache lines, the GPU can significantly interfere with the CPU memory accesses. This can happen up to the point where CPU cores suffer from starvation, causing a heavy drop on the performance, measured as the IPC.
 
-State of the art memory controllers (MC) have mainly been focused on a multi-core CPUs and not on the joint venture of CPU-GPU SoCs.  To make the applications-aware memory scheduling work on GPU-CPU SoC a very large request buffer is needed.
+State-of-the-art memory controllers (MC) have mainly been focused on multi-core CPUs and not on the joint venture of CPU-GPU SoCs.  To make the applications-aware memory scheduling work on CPU-GPU SoC, a very large request buffer is needed.
  
 Figure~\ref{fig:buff}(a) shows the request buffer of a memory controller where there is only a multi-core CPU.  The MC has a good overview over numerous requests from the CPU cores and inside into their memory behavior.  When the buffer is shared between the GPU and CPU, as can be seen in Figure~\ref{fig:buff}(b) the requests from the GPU limit the MC capability of insight into the behavior of requests from the CPU cores.  Figure~\ref{fig:buff}(c) shows larger request buffer so that the MC can observer more requests from the CPU\cite{SmS}.
 
@@ -106,12 +106,12 @@ Strictly speaking, a device's main memory needs to have greater capacity in smal
 
 \section{Solutions}
 \subsection{Cache management in shared LLC}
-The proposed solution is a new cache management policy called HeLM (Heterogeneous LLC Management). It consists on measuring the cache sensitivity of the GPU and CPU, and based on a couple of thresholds decide if GPU access requests to the LLC should be bypassed directly to the main memory or not.
-It is based on the fact that GPUs have a much higher TLP than CPUs, and thus are less affected by longer memory access latency. Having a high TLP means that there will most likely be some threads that can be ran while waiting for the memory to respond. If that is the case, bypassing the cache should not affect the IPC count.
+The proposed solution in \cite{LLC} is a new cache management policy called HeLM (Heterogeneous LLC Management). It consists on measuring the cache sensitivity of the GPU and CPU, and based on a couple of thresholds decide if GPU access requests to the LLC should be bypassed directly to the main memory or not.
+It is based on the fact that GPUs have a much higher TLP than CPUs, and thus are less affected by longer memory access latency. Having a high TLP means that there will most likely be some threads that can be ran while waiting for the memory to respond. If that is the case, bypassing the cache should not have a big effect on the IPC count.
 
-To calculate cache sensitivity in the GPUs, set dueling is used. The GPUs TLP is measured as the amount of wavefronts ready to be scheduled. This information is sent along with the LLC access request whenever there is an L1 cache miss. One GPU core is set to do a cache bypass whenever it's TLP is higher than a lowThreshold. Another one is set to do the same but with highThreshold. IPC is measured for both cores and if the difference is higher than pThreshold, the highThreshold is used for the remaining cores.
+To calculate cache sensitivity in the GPUs, set dueling is used. The GPUs TLP is measured as the amount of wavefronts ready to be scheduled. This information is sent along with the LLC access request whenever there is an L1 cache miss. One GPU core is set to do a cache bypass whenever it's TLP is higher than a low Threshold. Another one is set to do the same but with high Threshold. IPC is measured for both cores and if the difference is higher than p Threshold, the high Threshold is used for the remaining cores.
 
-In the case of the CPUs, the cache misses on the LLC are measured with both lowThreshold and highThreshold bypassing of the GPUs. If the difference in cache misses is higher than mThreshold, the threshold of the GPUs is overridden to be the lowThreshold.
+In the case of the CPUs, the cache misses on the LLC are measured with both low Threshold and high Threshold bypassing of the GPUs. If the difference in cache misses is higher than m Threshold, the threshold of the GPUs is overridden to be the low Threshold.
 
 \begin{figure}[H]
 	\centering
@@ -119,7 +119,7 @@ In the case of the CPUs, the cache misses on the LLC are measured with both lowT
 	\caption{Algorithm followed to select the proper bypass threshold\cite{LLC}}\label{fig:algo}
 \end{figure} 
 
-What all this means is that the CPU will be given preference over the GPU in cache allocation. The GPU will be frequently bypassing the LLC cache, specially if its TLP is high. So a penalty in the GPUs IPC is expected. However the CPU IPC is expected to see the most change, since the GPU bypassing of the LLC means the CPU will get more sets for its use. Figure~\ref{fig:algo} shows the algorithm being followed to determine the threshold used for LLC bypassing. The first comparison determines if there are too many cache misses for the CPU requests and if so sets the threshold to lowThreshold. This is how priority is given to the CPU requests.
+What all this means is that the CPU will be given preference over the GPU in cache allocation. The GPU will be frequently bypassing the LLC cache, specially if its TLP is high. So a small penalty in the GPUs IPC is expected. However the CPU IPC is expected to see the most change, since the GPU bypassing of the LLC means the CPU will get more sets for its use. Figure~\ref{fig:algo} shows the algorithm being followed to determine the threshold used for LLC bypassing. The first comparison determines if there are too many cache misses for the CPU requests and if so sets the threshold to low Threshold This is how priority is given to the CPU requests.
 
 
 
@@ -163,7 +163,7 @@ dynamically adjusting the in-DRAM write-buffer size for keeping the CPU IPC in a
 Another advantage provided by the hot-write buffer is the possibility of cell wear leveling by reducing the number of writes to a single bit (also by implementing the differential writing mechanism \cite{PRAM}), thus expanding the PRAM's lifetime and reliability.
 
 \subsection{Staged memory scheduling}
-The others in \cite{SmS} propose to solve the request buffer issue with a new memory controller (MC), Staged Memory Scheduling (SMS), that is a simpler implementation in hardware and provides performance and fairness improvements over the application-aware MC. It is split into three stages, the batch formation, batch scheduler and a DRAM command scheduler.
+The authors in \cite{SmS} propose to solve the request buffer issue with a new memory controller (MC), Staged Memory Scheduling (SMS), that is a simpler implementation in hardware and provides performance and fairness improvements over the application-aware MC. It is split into three stages, the batch formation, batch scheduler and a DRAM command scheduler.
 
 \begin{figure}[H]
 	\centering
@@ -173,13 +173,13 @@ The others in \cite{SmS} propose to solve the request buffer issue with a new me
 
 The batch formation is focused on row-buffer locality.  It groups together requests from applications that want to access the same row in the main memory. The second stage, the batch scheduler, schedules batches from different applications and the third stage, the DRAM Command Scheduler schedules requests while satisfying all DRAM constrains \cite{SmS}
 
-Stage 1: Is built from simple FIFO structures that have one structure per sources.  One source is a single CPU-core or the GPU.  One batch is one or more memory requests from the same source that request access to the same DRAM row.  A batch is only ready when a request to a new DRAM row comes in, it is full or when the oldest request in the batch has exceeded a predefined age threshold.  A batch that is considered ready moves to stage 2 the Batch scheduler.
+Stage 1 is built from simple FIFO structures that have one structure per sources.  One source is a single CPU-core or the GPU.  One batch is one or more memory requests from the same source that request access to the same DRAM row.  A batch is only ready when a request to a new DRAM row comes in, when it is full or when the oldest request in the batch has exceeded a predefined age threshold.  A batch that is considered ready moves to stage 2 the Batch scheduler.
 
-Stage 2:  The Batch Scheduler operates in two states, the pick  and the  drain.  In the pick state in picks a batch from stage 1 and than enters drain state where it feeds the FIFO batch to the DRAM Command Scheduler one request per clock cycle until the whole batch is gone.  The picking is done in one of two fashions.  It picks the batch using either round-robin policy or shortest job first (SJF).   SJF tends to favor latency-sensitive applications that tend to have fewer total requests and thus favoring the CPU over the GPU.  On the other hand the round-robin simply picks the next ready batch in a round-robin manner and thus servicing high memory-intensive applications and favoring the GPU over the CPU.  The batch scheduler uses SJF with a probability of $p$ and round-robin  $ 1 - p $ which will be explained better later.
+Stage 2 consists on the Batch Scheduler, which operates in two states, the pick  and the  drain.  In the pick state it picks a batch from stage 1 and then enters the drain state where it feeds the FIFO batch to the DRAM Command Scheduler one request per clock cycle until the whole batch is gone.  The picking is done in one of two fashions.  It picks the batch using either round-robin policy or shortest job first (SJF).   SJF tends to favor latency-sensitive applications that tend to have fewer total requests and thus favoring the CPU over the GPU.  On the other hand the round-robin simply picks the next ready batch in a round-robin manner and thus servicing high memory-intensive applications and favoring the GPU over the CPU.  The batch scheduler uses SJF with a probability of $p$ and round-robin  $ 1 - p $ which will be explained better later.
 
-Stage 3: DRAM Command Scheduler (DCS) consists of few FIFO queues or one per DRAM bank.  Since the row-buffer locality from stage 1 has been preserved the only job of the DCS is to issue low-level DRAM commands and ensuring DRAM protocol compliance. 
+Stage 3 consists on the DRAM Command Scheduler (DCS) which is made up of a few FIFO queues or one per DRAM bank.  Since the row-buffer locality from stage 1 has been preserved the only job of the DCS is to issue low-level DRAM commands and ensuring DRAM protocol compliance. 
 
-Some batches bypass stage 1 and 2 and go directly to the DCS. Latency-sensitive requests of applications with low memory-intensity and all requests wen the system is lightly loaded, that is when total number of in-flight requests over all sources in the DCS are fewer the 16.\\
+Some batches bypass stage 1 and 2 and go directly to the DCS, such as latency-sensitive requests of applications with low memory-intensity and all requests when the system is lightly loaded, that is when total number of in-flight requests over all sources in the DCS are fewer than 16.
 
 The probability parameter $p$:  As stated above the probability of SJF used is $p$ and that of round-robin policy $1-p$.  Therefor the value of $p$ determines  which gets higher priority, the CPU or the
 GPU.  That is when $p$ is high the SJF policy is performed more frequently then round-robin and therefore favoring less memory-intensive applications of the CPU over the GPU.  And on the other hand when p is low request batches are scheduled more often in round-robin fashion favoring memory-intensive applications of the GPU over the CPU.  As different systems have different performance needs it is proposed to have $p$ a dynamic parameter that can be tuned to the needs of different systems\cite{SmS}.\\
@@ -192,7 +192,7 @@ Batch Formation:  The hardware implementation for stage 1 can be of a fairly sim
   \resizebox{14.3 cm}{!}{\begin{minipage}{\textwidth}
 	\begin{tabular}{| l | l |}
 		\hline
-		Storgae & Size \\ \hline
+		Storage & Size \\ \hline
 		CPU FIFO queues 			& $N_{core} × Queue\_Size_{core} = 160 entries$ 					\\\hline
 		GPU FIFO queues 			& $N_{GPU} × Queue\_Size_{GPU} = 20 entries$ 						\\\hline
 		MPKC counters   			& $N_{core} × log_2 MPKC_{max} = 160 bits$							\\\hline
@@ -210,7 +210,7 @@ Batch Scheduler:  The batch scheduler does not need to be very complex as it onl
   \resizebox{15.5 cm}{!}{\begin{minipage}{\textwidth}
 	\begin{tabular}{| l | l |}
 		\hline
-		Storgae & Size \\ \hline
+		Storage & Size \\ \hline
 		CPU memory request counters 			& $N_{core} × log_2 Count_{max\_CPU} = 80 bits$ 					\\\hline
 		GPU memory request counter 			& $N_{GPU} × log_2 Count_{max\_GPU} = 10 bits$ 						\\\hline	
 	\end{tabular}
@@ -225,7 +225,7 @@ DRAM Command Scheduler:   Compared to the monolithic scheduler the DRAM command 
   \resizebox{17 cm}{!}{\begin{minipage}{\textwidth}
 	\begin{tabular}{| l | l |}
 		\hline
-		Storgae & Size \\ \hline
+		Storage & Size \\ \hline
 		Per-Bank FIFO queues			& $N_{banks} × Queue\_Size_{bank} = 120 entries$ 					\\\hline
 	\end{tabular}
   \end{minipage} }
@@ -254,7 +254,7 @@ For implementing the algorithm, a simple policy is used, described in Figure \re
 A more detailed view of the performance improvement of the three separate solutions is presented in the sections below:
 
 \subsection{Cache management in shared LLC}
-A comparison to other cache management policies was made with 3 different configurations: 1, 2 and 4 CPU cores, each with 4 GPU cores (properly named 1C4G, 2C4G and 4C4G respectively). A different random benchmark on each CPU core was run, and the same random benchmark for all 4 GPUs. For each configuration, the benchmark was changed 100, 40 and 30 times respectively. The reduction of cache misses and speedup was calculated relative to LRU results. Figure~\ref{fig:comp} shows the comparison.
+A comparison to other cache management policies was made in \cite{LLC} with 3 different configurations: 1, 2 and 4 CPU cores, each with 4 GPU cores (properly named 1C4G, 2C4G and 4C4G respectively). A different random benchmark on each CPU core was run, and the same random benchmark for all 4 GPUs. For each configuration, the benchmark was changed 100, 40 and 30 times respectively. The reduction of cache misses and speedup was calculated relative to LRU results. Figure~\ref{fig:comp} shows the comparison.
 
 \begin{figure}[H]
 	\centering
@@ -262,7 +262,7 @@ A comparison to other cache management policies was made with 3 different config
 	\caption{Percentage reduction in misses and percentage speedup in the CPUs and the GPUs caused by HeLM and other cache management policies in comparison to LRU \cite{LLC}}\label{fig:comp}
 \end{figure} 
 
-As can be seen in Figure~\ref{fig:comp}, HeLM offer a considerably higher reduction in cache misses and overall speedup for the CPUs. For the 1C4G configuration, the speedup amounted to 29.5\% compared to LRU, 39.1\% for 2C4G and 33\% for 4C4G. On the GPUs, however, the effect is the opposite, although it is important to notice that a huge increase in misses for the GPU didn't affect so negatively the speedup. To provide a more general overview, the results for CPUs and GPUs were combined into Figure~\ref{fig:comp1}. \cite{LLC}
+As can be seen in Figure~\ref{fig:comp}, HeLM offer a considerably higher reduction in cache misses and overall speedup for the CPUs. For the 1C4G configuration, the speedup amounted to 29.5\% compared to LRU, 39.1\% for 2C4G and 33\% for 4C4G \cite{LLC}. On the GPUs, however, the effect is the opposite, although it is important to notice that a huge increase in misses for the GPU didn't affect so negatively the speedup. To provide a more general overview, the results for CPUs and GPUs were combined into Figure~\ref{fig:comp1}. \cite{LLC}
 
 \begin{figure}[h]
 	\centering
@@ -296,7 +296,7 @@ The SMS is compared to three state-of-the-art memory scheduler configurations: F
 
 For evaluation of the system a set of 105 multi programmed workloads are used each consisting of sixteen SPEC CPU 2006 benchmarks and one GPU application.  
 
-To compare the performance of the different schedulers CPU-GPU Weighted Speedup (CGWS) metric (Eqn \ref{eq:CGWS})  is used.
+To compare the performance of the different schedulers CPU-GPU Weighted Speedup (CGWS) metric (Equation \ref{eq:CGWS})  is used.
 
 \begin{equation}
 CGWS = CPU_{WS} + GPU_{weight}*GPU_{speedup} \label{eq:CGWS}
@@ -354,7 +354,7 @@ In the case of the hybrid DRAM/PRAM solution, the overhead is represented by a w
 Finally, the SMS memory scheduler hardware overhead can be calculated using the formulas given in Table~\ref{tab:SmS1}, Table~\ref{tab:SmS2} and Table~\ref{tab:SmS3}. The data shown in the tables was calculated for 16 CPU cores and 1 GPU with 20 cores. For comparison, the analysis will be based on 1 GPU with 4 cores and 4 CPUs such as one of the configurations of the HeLM solution. For the GPU calculations, the result will be the same, as the resources are needed for the whole GPU independent of cores. So for example we would still need the same 20 entries for the GPU FIFO queues. For the CPU we can use a rule of three and it can be calculated that 40 entries are needed for the CPU FIFO queues. because they are required for the whole GPU not per core. The MPKC counters will have 40 bits, and the last requests row index another 60 bits. For Stage 2, the CPU memory request counters will represent 20 bits, while the GPU ones another 10 bits. Finally for Stage 3, the PerBank FIFO queues will have 120 entries supposing we have the same DRAM memory. In total this solution would require 130 bit counters and 3 queues with 40, 20 and 120 entries.
 
 \section{Analysis}
-The issues that have arose with the integration of GPU on the same die with the CPU need tackling on different fronts in order to take benefit of the increase in raw computing power that a heterogeneous SoC exhibits. 
+The issues that have arisen because of the integration of GPU on the same die with the CPU need tackling on different fronts in order to take benefit of the increase in raw computing power that a heterogeneous SoC exhibits. 
 The LLC management technique, the staged memory scheduler and the dynamic QoS are sequential improvements that can be made integrated into a heterogeneous SoC without changing the overall system architecture. Therefore, the previously mentioned solutions can be integrated in the design of current processing systems. The outcome of the integration can show improvements on three important steps in the data access blocks:
 \begin{itemize}
 	\item
@@ -371,22 +371,22 @@ To be able to compare the solutions, two cases were analyzed. The first case con
 
 Of the three papers analyzed, the HeLM cache management policy requires the least hardware overhead, just 166 bits, and thus the least chip and board area increase, while still offering a considerable speedup of at least 7.7\% up to 12.5\% compared to LRU, the simplest other solution. In terms of energy consumption, it could be argued that bypassing the LLC would cause an increase in accesses to the off-chip memory, however much of the bypassing is done whenever the application being run is cache insensitive. In that case most LLC accesses will miss and the main memory will still have to be used anyway. This means that energy-wise, a slight benefit could be seen by not having to go through the LLC.
 
-On the other hand, the PRAM solution would require the addition of another memory module to the board which means bigger form factor and higher costs. Not just that, but the need for having an extra cache on-chip, with a more considerable size of 79 kilobytes, means that this is the most cumbersome proposal. However, PRAM is a non-volatile memory, meaning that it can be completely turned off with zero power consumption for the deepest sleep modes. This is a very powerful and useful ability for very low consumption systems.
+On the other hand, the PRAM solution would require the addition of another memory module to the board which means bigger form factor and higher costs. Not just that, but the need for having an extra cache on-chip, with a more considerable size of 79 kilobytes, means that this is the most cumbersome proposal. However, PRAM is a non-volatile memory, meaning that it can be completely turned off with zero power consumption for the deepest sleep modes. This is a very useful ability for very low consumption systems.
 
 The memory scheduler solution can be considered a middle point between the two previous onces. Its speedup is at least 6.4\% but can be as much as 25.7\% compared to other state-of-the-art alternatives. Its overhead is mostly on on-chip area, and consists of 130 bits and 3 different queues of 40, 20 and 120 entries. Compared to HeLM, the difference in overhead is big, but still with a smaller footprint than PRAM.
 
-The second case that was analyzed consisted on having the best performance regardless of other factors, like area and power consumption. In this case, the memory scheduling solution would be the most appropriate since its speedup is the biggest of the three. The HeLM cache management policy could also be a good offer, but it doesn't perform as good and it wouldn't be advisable to have both of them since they mostly overlap and the improvement could be negligible. PRAM would simply not be a good solution since it offers a worse performance than just using DRAM. However it would be very desirable in systems with a big need for reduced power consumption and a big amount of main memory.
+The second case that was analyzed consisted on having the best performance regardless of other factors, like area and power consumption. In this case, the memory scheduling solution would be the most appropriate since its speedup is the biggest of the three. The HeLM cache management policy could also be a good offer, we would expect its effect on performance to be lower as when implemented on its own, since the work done by the scheduler and HeLM overlap in a way. PRAM would simply not be a good solution since it offers a worse performance than just using DRAM. However it would be very desirable in systems with a big need for reduced power consumption and a big amount of main memory.
 
 For the sake of keeping an adequate user-experience when using the GPU for graphics rendering, the dynamic QoS policy can be thrown into play. This is the case of mobile game consoles, where a bandwidth-bounded GPU can dramatically reduce the device's overall usability. Integrating the mechanism into the memory controller favors priority for the CPU, while keeping an acceptable level of frame rate for the GPU.
 
 \section{Conclusion}
-Recent developments in the field of main memory shows a broad in horizons, as researchers try to evaluate several different paths and approaches towards paving the way for another decade of sustained scaling. 
+Recent developments in the field of main memory show a broadened horizon, as researchers try to evaluate several different paths and approaches towards paving the way for another decade of sustained scaling. 
 
 In this paper, two different approaches have been studied for the evaluation of memory systems roadmap: technology-aware improvements (the combination of two technologies that complement each other)  and application-aware solutions (better management of memory resources). 
 
 Because of the challenges faced when combining two different execution units (the CPU and the integrated GPU - GPU) on the same die, the focus has to be shifted to multiple aspects and critical points, such as bandwidth, latency, capacity, reliability and energy consumption. Therefore, it is not enough to balance the load between the two processors, but to dynamically prioritize memory access \cite{LLC} and bandwidth allocation in order to adapt to different types of applications and to improve the overall user experience. 
 
-Aside from application-aware memory allocation, the attention needs to be drawn also to the efficient management of the on-chip request buffer in order to allow a appropiate ratio of instruction fetch for both compute cores, without a significant degradation in performance for neither of them. The  staged memory scheduler proves a good solution for the presented issue without a considerable impact on die area, costs or complexity.  It shows to improve performance and fairness compared to state-of-the-art memory schedulers and is significantly easer to implement\cite{SmS}.
+Aside from application-aware memory allocation, the attention needs to be drawn also to the efficient management of the on-chip request buffer in order to allow a appropriate ratio of instruction fetch for both compute cores, without a significant degradation in performance for neither of them. The  staged memory scheduler proves a good solution for the presented issue without a considerable impact on die area, costs or complexity.  It shows to improve performance and fairness compared to state-of-the-art memory schedulers and is significantly easer to implement\cite{SmS}.
 
 Regarding the area and energy consumption constraints, the hybrid main-memory organization presented in \cite{PRAM} and \cite{PDRAM} can help extend the roadmap of the current computer architectures, facilitating the integration in low-power devices. The synergy of the two technologies, combined with the dynamic hot-write buffer and management unit have a very small impact on CPU performance, greatly improving GPU IPC. Therefore, as stated in \cite{PRAM}, the increase in GPU computer power can be leveraged to build more powerful SoCs and make more high-performance compact devices.
 
