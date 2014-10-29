@@ -66,45 +66,14 @@
 \section{And more Stuff}
 
 \subsection{default}
-Total Cycles:                           2498189 (4.99638 msec)\\
-Execution Cycles:                         2122494 ( 84.96\%)\\
-Stall Cycles:                              375695 ( 15.04\%)\\
-Nops:                                      153215 (  6.13\%)\\
-Executed operations:                      2656192\\
 
-\textbf{Parameters}\\
-\# 2 issue vex 1 cluster \\
-CFG: Debug 0\\
-RES: IssueWidth 2\\
-RES: Alu.0 2 \\
-RES: Memory.0 1 \\ 
-RES: Mpy.0 2  \\
-RES: CopySrc.0 2 \\ 
-RES: CopyDst.0 2 \\
+\textbf{Worst for both is all 1 except alu = 2}
 
-\subsection{VeryWide}
+\textbf{For v42 recommended  is 1\_4\_2\_1\_1\_4\_2\_1\_1\_1\\
+and for pocsag 1\_4\_1\_1\_1\_4\_1\_1\_1\_1}
 
-Total Cycles:                             2147918 (4.29584 msec)\\
-Execution Cycles:                         1769735 ( 82.39\%)\\
-Stall Cycles:                              378183 ( 17.61\%)\\
-Nops:                                      265686 ( 12.37\%)\\
-Executed operations:                      2860932\\
-
-\textbf{Parameters}\\
-
-CFG: Debug \\
-RES: IssueWidth 32\\
-RES: MemLoad 32\\
-RES: MemStore 32\\
-RES: MemPft 32\\
-
-RES: Alu.0 32 \\
-RES: Memory.0 32\\ 
-RES: Mpy.0 32 \\
-RES: CopySrc.0 32\\ 
-RES: CopyDst.0 32\\
-x 4 clusters
-
+\textbf{Best for v42 1\_4\_2\_1\_1\_8\_1\_1...\\
+and for pocsag 1\_4\_2\_2\_2\_6\_2\_1\_1\_1 }
 
 
 
