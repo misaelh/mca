@@ -1,0 +1,69 @@
+%% Introduction to latex facilities.
+%% Sat 31 Dec 2005
+%% Stephen Eglen.
+
+%% Text following a percent sign (%) until the end of line is treated
+%% as a comment.
+
+\documentclass{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% This section is called the preamble, where we can specify which
+%% latex packages we required.  Most (but not of all) of the packages
+%% below should be fairly standard in most latex documents.  The
+%% exception is xspace and the new \latex command, which you probably
+%% do not need.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Better math support:
+\usepackage{amsmath}
+
+%% Bibliography style:
+\usepackage{mathptmx}           % Use the Times font.
+\usepackage{graphicx}           % Needed for including graphics.
+\usepackage{url}                % Facility for activating URLs.
+
+%% Set the paper size to be A4, with a 2cm margin 
+%% all around the page.
+\usepackage[a4paper,margin=2cm]{geometry}
+
+%% Natbib is a popular style for formatting references.
+\usepackage{natbib}
+%% bibpunct sets the punctuation used for formatting citations.
+\bibpunct{(}{)}{;}{a}{,}{,}
+
+%% textcomp provides extra control sequences for accessing text symbols:
+\usepackage{textcomp}
+\newcommand*{\micro}{\textmu}
+%% Here, we define the \micro command to print a text "mu".
+%% "\newcommand" returns an error if "\micro" is already defined.
+
+%% This is an example of a new macro that I've created to save me
+%% having to type \LaTeX each time.  The xspace command provides space
+%% after the word LaTeX where appropriate.
+\usepackage{xspace}
+\providecommand*{\latex}{\LaTeX\xspace}
+%% "\providecommand" does nothing if "\latex" is already defined.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Start of the document.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\author{authors\\
+  Stuff\\
+  For Fun}
+\date{\today}
+\title{LAB 1}
+\maketitle
+
+
+\section{Stuff}
+
+\section{Other Stuff}
+
+\section{And more Stuff}
+
+
+\end{document}
