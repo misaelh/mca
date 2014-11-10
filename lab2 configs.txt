@@ -1,0 +1,2 @@
+CRC: Best(4,2,2,2,4,2,2,2,2), Recommended(4,1,1,1,4,1,1,1,1), Worst(1,1,1,1,2,1,1,1,1)    Runtime: 0.056 (Rec)
+Blit: Best(4,1,1,1,5,1,1,1,1), Recommended(2,1,1,1,2,1,1,1,1), Worst(1,1,1,1,2,1,1,1,1)   Runtime: 0.062 (Rec)
