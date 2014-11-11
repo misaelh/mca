@@ -1,0 +1,22 @@
+
+============================================= Programming FPGA ... 
+
+INFO:iMPACT:1777 - 
+   Reading /opt/Xilinx/14.7/LabTools/LabTools/virtex6/data/xc6vlx240t.bsd...
+INFO:iMPACT:501 - '1': Added Device xc6vlx240t successfully.
+INFO:iMPACT:1777 - 
+   Reading /opt/Xilinx/14.7/LabTools/LabTools/acecf/data/xccace.bsd...
+INFO:iMPACT:501 - '1': Added Device xccace successfully.
+INFO:iMPACT:2257 - Startup Clock has been changed to 'JtagClk' in the bitstream
+   stored in memory,
+   but the original bitstream file remains unchanged.
+INFO:iMPACT:501 - '2': Added Device xc6vlx240t successfully.
+INFO:iMPACT:2219 - Status register values:
+INFO:iMPACT - 0011 1111 0101 1110 0000 1000 0100 0000 
+INFO:iMPACT:579 - '2': Completed downloading bit file to device.
+INFO:iMPACT:188 - '2': Programming completed successfully.
+INFO:iMPACT - '2': Checking done pin....done.
+
+============================================= Reading benchmark results ...
+INFO:UART read: Waiting for completion..
+

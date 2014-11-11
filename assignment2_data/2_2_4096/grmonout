@@ -1,0 +1,69 @@
+[sys]      SESSION: Tue Nov 11 16:57:14 2014
+[sys]      GRMON version: v2.0.56 eval version
+[sys]      OS: Linux
+[sys]      Command line: /home/ewi-pdp/MCA/grmon-eval-2.0.56/linux/bin/grmon -xilusb -log /home/ewi-pdp/Dropbox/MCA/for_students/group18/grmonout -c GRMON_batch.cmd
+[sys]      
+[sys]      GRMON2 LEON debug monitor v2.0.56 eval version
+[sys]      
+[sys]      Copyright (C) 2014 Aeroflex Gaisler - All rights reserved.
+[sys]      For latest updates, go to http://www.gaisler.com/
+[sys]      Comments or bug-reports to support@gaisler.com
+[sys]      
+[sys]      This eval version will expire on 10/03/2015
+[sys]      
+[sys]      Xilusb: Cable type/rev : 0x3 
+[sys]       JTAG chain (2): xc6vlx240t xccace 
+[sys]      Cannot continue, processor not in debug mode
+[usr1]     GRLIB build version: 4108
+[usr1]     Detected frequency:  75 MHz
+[usr1]     
+[usr1]     Component                            Vendor
+[usr1]     JTAG Debug Link                      Aeroflex Gaisler
+[usr1]     Unknown device                       OpenCores
+[usr1]     Xilinx MIG DDR2 Controller           Aeroflex Gaisler
+[usr1]     AHB/APB Bridge                       Aeroflex Gaisler
+[usr1]     LEON3 Debug Support Unit             Aeroflex Gaisler
+[usr1]     Generic UART                         Aeroflex Gaisler
+[usr1]     Multi-processor Interrupt Ctrl.      Aeroflex Gaisler
+[usr1]     Modular Timer Unit                   Aeroflex Gaisler
+[usr1]     General Purpose Register             Aeroflex Gaisler
+[usr1]     AMBA Wrapper for OC I2C-master       Aeroflex Gaisler
+[usr1]     General Purpose Register             Aeroflex Gaisler
+[usr1]     
+[usr1]     Use command 'info sys' to print a detailed report of attached cores
+[usr1]     
+[usr1]     grmon2> ::source [file normalize {GRMON_batch.cmd}]
+[usr1]     reading power usage:
+[usr1]     00:  0a c2
+[usr1]     loading application binary:
+[usr1]     
+[usr1]     00000000 Binary data                  0B              [>               ]   0%
+[usr1]     00000000 Binary data               24.0kB / 127.9kB   [==>             ]  18%
+[usr1]     00000000 Binary data               48.0kB / 127.9kB   [=====>          ]  37%
+[usr1]     00000000 Binary data               72.0kB / 127.9kB   [========>       ]  56%
+[usr1]     00000000 Binary data               96.0kB / 127.9kB   [===========>    ]  75%
+[usr1]     00000000 Binary data              120.0kB / 127.9kB   [==============> ]  93%
+[usr1]     00000000 Binary data              127.9kB / 127.9kB   [===============>] 100%
+[usr1]     Total size: 127.86kB (1.52Mbit/s)
+[usr1]     Entry point 0x0
+[usr1]     Image /home/ewi-pdp/MCA/server/app.bin loaded
+[usr1]     resetting core(s):
+[usr1]     waiting 2 seconds
+[usr1]     reading idle power usage:
+[usr1]     00:  fb bb
+[usr1]     core 0 Execution statistics:
+[usr1]     0x80000500  00000000  00000003  0001d265  0006840e    ...........e....
+[usr1]     0x80000510  00005f07  0001ff70  00000000  00000000    .._....p........
+[usr1]     0x80000520  00000060  00440dbe  00259e15  00000000    ...`.D...%......
+[usr1]     0x80000530  00000000  00000000  00000000  00000000    ................
+[usr1]     core 1 Execution statistics:
+[usr1]     0x80000700  00000000  00000000  00000000  00000000    ................
+[usr1]     0x80000710  00000000  00000000  00000000  00000000    ................
+[usr1]     0x80000720  00000000  00000000  00000000  00000000    ................
+[usr1]     0x80000730  00000000  00000000  00000000  00000000    ................
+[usr1]     core 2 Execution statistics:
+[usr1]     0x80000a00  00000000  00000000  00000000  00000000    ................
+[usr1]     0x80000a10  00000000  00000000  00000000  00000000    ................
+[usr1]     0x80000a20  00000000  00000000  00000000  00000000    ................
+[usr1]     0x80000a30  00000000  00000000  00000000  00000000    ................
+[usr1]     
